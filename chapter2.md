@@ -313,17 +313,7 @@ $output\_stride\gets 1$ $o\gets$ `forward`$(layers[i..n], o)$
 $loss\gets$ `criterion`$(o)$ $g\gets$ `backward`$(layers[n..i], loss)$
 :::
 
-<figure id="fig:constant_input">
-<p><span><embed src="constant_input_size.eps" /></span><br />
-</p>
-<figcaption>This graph shows the linear relationship between the size of
-the tile and the memory required to stream a input of size 2048<span
-class="math inline">×</span>2048. Since the amount of overlap is minimal
-in this example (16 pixels), the time does not increase until 81 tiles
-are needed. Performance shown of three 2D/̄convolutional layers with
-respectively 3, 64, and 3 output channels and kernel/̄size 3 on an RTX
-2080Ti GPU. All numbers are averaged over 10 runs.</figcaption>
-</figure>
+![image](constant_input_size.eps){width=".8\\columnwidth"}\
 
 ## Limitations
 
@@ -336,9 +326,9 @@ Furthermore, due to the use of gradient checkpointing, the method will
 perform multiple forward and backward operations to calculate
 intermediate activations. This results in longer processing time than it
 would take if the image could fit on the GPU (see Fig.
-[1](#fig:constant_input){reference-type="ref"
+[\[fig:constant_input\]](#fig:constant_input){reference-type="ref"
 reference="fig:constant_input"} and
-[2](#fig:constant_tile){reference-type="ref"
+[\[fig:constant_tile\]](#fig:constant_tile){reference-type="ref"
 reference="fig:constant_tile"}). The processing time increases almost
 linearly with input size plus overlap.
 
@@ -358,19 +348,7 @@ all the feature map values such as BatchNormalization[@Ioffe2015]).
 However, these operations can be used as soon as the whole feature map
 is reconstructed, after streaming, in the final part of the network.
 
-<figure id="fig:constant_tile">
-<p><span><embed src="constant_tile_size.eps" /></span><br />
-</p>
-<figcaption>This graph shows the linear relationship with time required
-when increasing the input size (keeping the tile size constant). With
-streaming, there is significantly less memory required (up to 97%). The
-memory increase with streaming is due to the size of the input and
-output gradient. The amount of memory required to train with images
-above 2048<span class="math inline">×</span>2048 without streaming is
-estimated. Performance shown of three 2D/̄convolutional layers with
-respectively 3, 64, and 3 output channels and kernel/̄size 3 on an RTX
-2080Ti GPU. All numbers are averaged over 10 runs.</figcaption>
-</figure>
+![image](constant_tile_size.eps){width=".8\\columnwidth"}\
 
 # Evaluation
 
@@ -441,19 +419,13 @@ streamed with tiles of 32$\times$`<!-- -->`{=html}32 pixels. The network
 was initialized according to He et al.,
 2015[@He:2015:DDR:2919332.2919814].
 
-<figure id="figure:imagenette_exp">
-<p><span><embed src="streamingvsnormal_rebuttal.eps" /></span><br />
-<span><embed src="streamingvsnormal_accuracy_rebuttal.eps" /></span></p>
-<figcaption>Network trained from the same initialization using
-conventional training and streaming (dividing the input in 400 tiles of
-32<span class="math inline">×</span>32). Showing identical loss and
-accuracy curves.</figcaption>
-</figure>
+![image](streamingvsnormal_rebuttal.eps){width="\\columnwidth"}\
+![image](streamingvsnormal_accuracy_rebuttal.eps){width="\\columnwidth"}
 
 ## Results on Imagenette
 
 The loss curves of both methods (Figure
-[3](#figure:imagenette_exp){reference-type="ref"
+[\[figure:imagenette_exp\]](#figure:imagenette_exp){reference-type="ref"
 reference="figure:imagenette_exp"}) were nearly identical, which
 empirically shows that training with streaming performed equivalently to
 conventional training. Small differences are likely due to losses of
@@ -677,7 +649,7 @@ resolution, a Gaussian blur was applied with $\sigma = 50$ for
 can be significantly higher than others, we capped the upper gradient
 values at the 99^th^ percentile[@Smilkov2017]. The upper 50^th^
 percentile was overlayed on top of the original image (See Figure
-[5](#figure:saliency){reference-type="ref"
+[2](#figure:saliency){reference-type="ref"
 reference="figure:saliency"}).
 
 ![Saliency maps for test set images of the TUPAC16 experiment using the
@@ -771,7 +743,7 @@ show us which parts of the image the model takes into
 consideration[@Simonyan2013]. Saliency maps of our CNNs trained on
 higher resolutions suggest that the networks learn the relevant features
 of the high/̄resolution images (see Figure
-[5](#figure:saliency){reference-type="ref"
+[2](#figure:saliency){reference-type="ref"
 reference="figure:saliency"}). The image/̄level trained CAMELYON17
 network shows highlights corresponding to the ground truth pixel/̄level
 annotation of a breast cancer metastasis. The TUPAC16 network shows
@@ -789,7 +761,7 @@ Inception or DenseNet.
 While increasing input sizes and resolutions are beneficial in various
 tasks, there are some drawbacks. A limitation is the increase in
 computation time with increasing input sizes (Fig.
-[2](#fig:constant_tile){reference-type="ref"
+[\[fig:constant_tile\]](#fig:constant_tile){reference-type="ref"
 reference="fig:constant_tile"}). This can be partially counteracted by
 dividing the batch over multiple GPUs. Due to this limitation, we did
 not increase resolution further in our experiments. Future research
@@ -837,5 +809,54 @@ volumetric radiological images.
 
 # Acknowledgements
 
-The authors would like to thank Erdi Çallı for his help in proofreading the
-equations.
+The authors would like to thank Erdi Çallı for his help in proofreading
+the equations.
+
+# Authors
+
+## Hans Pinckaers
+
+![image](avatar.jpg){width="0.4\\columnwidth"}
+
+Hans Pinckaers is a PhD candidate in the Computational Pathology group
+of the Department of Pathology of the Radboud University Medical Center
+in Nijmegen. He studied Medicine at Leiden University Medical Center for
+which he obtained his MD in 2016. After his graduation he worked one
+year as a Pathology resident. In 2017, Hans joined the Diagnostic Image
+Analysis Group where he works under the supervision of Geert Litjens and
+Jeroen van der Laak on deep learning for improved prognostics in
+prostate cancer.
+
+## Bram van Ginneken
+
+![image](bram.jpg){width="0.5\\columnwidth"}
+
+Bram van Ginneken is Professor of Medical Image Analysis at Radboud
+University Medical Center and chairs the Diagnostic Image Analysis
+Group. He also works for Fraunhofer MEVIS in Bremen, Germany, and is a
+founder of Thirona, a company that develops software and provides
+services for medical image analysis. He studied Physics at Eindhoven
+University of Technology and Utrecht University. In 2001, he obtained
+his Ph.D. at the Image Sciences Institute on Computer-Aided Diagnosis in
+Chest Radiography. He has (co/̄)authored over 200 publications in
+international journals. He is a member of the Fleischner Society and of
+the Editorial Board of Medical Image Analysis. He pioneered the concept
+of challenges in medical image analysis.
+
+## Geert Litjens
+
+![image](geert.jpg){width="0.5\\columnwidth"}
+
+Geert Litjens completed his PhD thesis on "Computerized detection of
+prostate cancer in multi-parametric MRI" at the Radboud University
+Medical Center. He is currently assistant professor in Computation
+Pathology at the same institution. His research focuses on applications
+of machine learning to improve oncology diagnostics
+
+[^1]: By convention we used the term *convolution* although the
+    mathematical operation implemented in most machine learning
+    frameworks (e.g., TensorFlow, PyTorch) is a cross/̄correlation.
+
+[^2]: Zero/̄padding the tiles before the convolution does not help
+    because these zeros do not exist in the original vector, hereby
+    invalidating the gradients at the border as well.
