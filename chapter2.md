@@ -1,3 +1,12 @@
+---
+author:
+- Hans Pinckaers, Bram van Ginneken, Geert Litjens
+bibliography:
+- references.bib
+title: Streaming convolutional neural networks for end-to-end learning
+  with multi-megapixel images
+---
+
 # Introduction
 
 Convolutional neural networks (CNN) are the current state/̄of/̄the/̄art
@@ -186,21 +195,22 @@ one/̄dimensional real/̄valued vector with $N$ elements. In discrete
 one/̄dimensional space, a "valid" convolution[^1] (\*) with a kernel with
 $n$ weights $w \in \mathbb{R}^n$, and stride 1, is defined as:
 
-$$\label{eq:1}
-(x * w)_k = \sum_{i=0}^{n} w_{i}x_{k+i}$$
+$$ (x * w)_k = \sum_{i=0}^{n} w_{i}x_{k+i}$$ {#eq:1}
 
 where $k \in \{0,\ldots,f\}$ and $f=N - n$, for any kernel with length
 $n \leq N$ (for clarity, we will start all indices from 0). Our goal is
-to decrease the memory load of an individual convolution by tiling the
-input. Following [\[eq:1\]](#eq:1){reference-type="eqref"
-reference="eq:1"}, we can achieve the same result as $x * w$, by doing
-two convolutions on the input: $$\begin{gathered}
-a = \{(x * w)_0,\ldots,(x * w)_{f//2}\} \label{eq:2}\\
-b = \{(x * w)_{f//2+1},\ldots,(x * w)_f\} \label{eq:3}
-\end{gathered}$$ where $//$ denotes a divide and floor operation.
+to decrease the memory load of an individual convolution by tiling the input.
+Following +@eq:1, we can achieve the same result as $x * w$, by doing two
+convolutions on the input: 
 
-By definition of concatenation ($\frown$): $$\label{eq:4}
-\{(x * w)_0,\ldots,(x * w)_f\}= a \frown b$$
+$$ a = \{(x * w)_0,\ldots,(x * w)_{f//2}\} $$
+$$ \label{eq:2}\\ b = \{(x * w)_{f//2+1},\ldots,(x * w)_f\} $$ {#eq:2}
+$$ \label{eq:3} \end{gathered} $$ {#eq:3}
+where $//$ denotes a divide and floor operation.
+
+By definition of concatenation ($\frown$):
+
+$$\{(x * w)_0,\ldots,(x w)_f\}= a \frown  b$$ {#eq:4}
 
 To ensure that the concatenation of both tiles results in the same
 output as for the full vector, we need to increase the size of the
@@ -245,26 +255,20 @@ utilizing the tiles. To start, let us define $p$ as the output after
 streaming. The derivative of a weight in a convolutional kernel is
 defined as:
 
-$$% \label{eq:5}
+$$ 
 \Delta w_j = \sum_{i=0}^{\lvert p \rvert-1}
 \begin{cases}
-  \Delta p_i x_{i+j}, & \text{if}\ i - j \geq 0 \text{ and } i - j < \lvert p \rvert \\
-%   0 1 2 3 4 = p
-%   - - - - -
-%       0 1 2 = kernel (j - i \geq 0 \text{and} j - i + n < |p|)
-%         0 1 2 = not possible (j + n - i < |p|)
-%              
-%       input (x) = 7
-%       output (p) = 5  
-  0, & \text{otherwise}
-\end{cases}$$ where $\lvert \cdot\rvert$ denotes the length of a vector.
+  \Delta p_i x_{i+j}, & \text{if}\ i - j \geq 0 \text{ and } i - j < \lvert p \rvert \\ 0, & \text{otherwise}
+\end{cases}$$ 
+{#eq:5}
+
+where $\lvert \cdot\rvert$ denotes the length of a vector.
 
 While streaming, this sum has to be reconstructed through the summation
 of the gradients of all tiles, which will result in the same gradient
 again:
 
-$$\label{eq:6}
-\Delta w_j = \sum_{i=0}^{\lvert a \rvert-1} \Delta a_i x_{i+j} + \sum_{i=0}^{\lvert b \rvert-1} \Delta b_i x_{i+j+f//2}$$
+$$ \Delta w_j = \sum_{i=0}^{\lvert a \rvert-1} \Delta a_i x_{i+j} + \sum_{i=0}^{\lvert b \rvert-1} \Delta b_i x_{i+j+f//2} $$ {#eq:6}
 
 The gradient of the input can be calculated with a similar sum, but then
 shifted by the kernel size: $$% \label{eq:7}
