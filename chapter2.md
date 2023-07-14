@@ -194,6 +194,7 @@ one-dimensional real-valued vector with $N$ elements. In discrete
 one-dimensional space, a "valid" convolution[^1] (\*) with a kernel with
 $n$ weights $w \in \mathbb{R}^n$, and stride 1, is defined as:
 
+::: algorithm
 $$\label{eq:1}
 (x * w)_k = \sum_{i=0}^{n} w_{i}x_{k+i}$$
 
@@ -392,7 +393,6 @@ ImageNet dataset, ImageNette, using 10 ImageNet classes (tench, English
 springer, cassette player, chain saw, church, French horn, garbage
 truck, gas pump, golf ball, parachute), analog to [@Howard2019].
 
-```
   **Layers**        **Kernel size**   **Channels**
   ----------------- ----------------- --------------
   2D convolution    3x3               16
@@ -408,7 +408,6 @@ truck, gas pump, golf ball, parachute), analog to [@Howard2019].
   Fully connected   10                
 
   : Network architecture for Imagenette experiment
-```
 
 ## Data preparation
 
@@ -463,7 +462,6 @@ test set of 321 WSIs, of which the public ground truth is not available.
 The submitted predictions were evaluated using Spearman's rank-order
 correlation between the prediction and the ground truth.
 
-```
 ::: {#tab:extset}
   ------------------- ------------ -------------- --------------------------
   **Layers**          **Kernel**   **Channels**   **Details**
@@ -488,7 +486,6 @@ correlation between the prediction and the ground truth.
 
   : Network architecture for TUPAC16 experiments.
 :::
-```
 
 To evaluate whether CNN models can leverage and use the higher
 resolution information that streaming makes possible, we performed two
@@ -552,7 +549,6 @@ the prediction and the ground truth PAM50 proliferation scores. In both
 experiments, an improvement of the metric was seen with increasing input
 sizes.
 
-```
 ::: {#tab:tupacresults}
   **Experiment**                                                  **Input size**   **Test set performance**
   --------------------------------------------------------------- ---------------- --------------------------
@@ -566,7 +562,6 @@ sizes.
   : TUPAC16: performance of the models on the independent test test,
   Spearman's rho correlation coefficient
 :::
-```
 
 The result of the network with the input image resolution of
 4096$\times$`<!-- -->`{=html}4096 approached state-of-the-art for
@@ -575,7 +570,6 @@ of the leaderboard used an additional set of manual annotations of
 mitotic figures and is therefore not directly comparable to our
 experiments.
 
-```
 ::: {#tab:tupacleaderboard}
   **Experiment**                                      **Corr. coefficient**
   --------------------------------------------------- -----------------------
@@ -592,7 +586,6 @@ experiments.
   the challenge and does not train a single model to predict from slide
   to PAM50 score.
 :::
-```
 
 # Experiments on CAMELYON17 dataset {#section:camyleon}
 
@@ -636,7 +629,6 @@ reformulation of variance as $\mathbb{E}[X^2] - \mu^2$ was used to
 calculate the full standard deviation of ten mini-batches before
 applying LSUV.
 
-```
 ::: table*
   ----------- ----------------------------------------------------------------- --------------------------------------------------------------------------- ------------------------------------------------------------------------------- -----------------------------------------------------------------------------------
   **Input**   **Negative**                                                      **Isolated tumor cells**                                                    **Micro-metastases**                                                            **Macro-metastases**
@@ -646,7 +638,6 @@ applying LSUV.
   8192$^2$    **0.706** (0.660-0.751, p~1~\<0.001, p~2~=0.06)                   0.463 (0.359-0.569, p~1~=0.43, p~2~=0.83)                                   **0.709** (0.645-0.769, p~1~=0.35, p~2~=0.22)                                   **0.827** (0.777-0.874, p~1~\<0.001, p~2~\<0.001)
   ----------- ----------------------------------------------------------------- --------------------------------------------------------------------------- ------------------------------------------------------------------------------- -----------------------------------------------------------------------------------
 :::
-```
 
 ## Results on CAMELYON17
 
