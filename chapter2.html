@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Hans Pinckaers, Bram van Ginneken, Geert Litjens" />
+  <title>Streaming convolutional neural networks for end-to-end learning with multi-megapixel images</title>
+  <style>
+    html {
+      line-height: 1.5;
+      font-family: Georgia, serif;
+      font-size: 20px;
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 1em;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-size: 85%;
+      margin: 0;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Streaming convolutional neural networks for end-to-end
+learning with multi-megapixel images</h1>
+<p class="author">Hans Pinckaers, Bram van Ginneken, Geert Litjens</p>
+</header>
+<h1 id="introduction">Introduction</h1>
+<p>Convolutional neural networks (CNN) are the current state-of-the-art
+machine learning algorithms for many computer vision tasks, such as
+classification or segmentation. Ever since Krizhevsky et al. won
+ImageNet<span class="citation"
+data-cites="Russakovsky2015"><sup>1</sup></span> with a CNN<span
+class="citation" data-cites="Krizhevsky2012"><sup>2</sup></span> in
+2012, these networks have become deeper<span class="citation"
+data-cites="He2016"><sup>3</sup></span> and wider<span class="citation"
+data-cites="Zagoruyko2016"><sup>4</sup></span> to further improve
+accuracy. Training these larger networks requires large amounts of
+computer memory, which increases exponentially with increasing image
+size. To avoid shortcomings in memory, most natural image datasets in
+computer vision contain sub-megapixel images: 0.09 megapixel for
+ImageNet<span class="citation"
+data-cites="Russakovsky2015"><sup>1</sup></span> and 0.001 megapixel for
+CIFAR-10<span class="citation"
+data-cites="Krizhevsky2009"><sup>5</sup></span>. In several domains such
+as remote sensing or medical imaging, there is a need for training CNNs
+with multi-megapixel-sized images – containing both global contextual
+and local textural information – to obtain accurate models.</p>
+<p>Computer memory becomes a limiting factor because the conventional
+backpropagation algorithm for optimizing deep neural networks requires
+the storage of intermediate activations. Since the size of these
+intermediate activations in a convolutional neural network increases
+proportionally to the input size of the network, memory quickly fills up
+with images of multiple megapixels. As such, only small CNNs could be
+trained with these images and state-of-the-art architectures would be
+out of reach, even on large computing clusters.</p>
+<p>In this paper, we propose a novel method to directly train
+state-of-the-art convolutional neural networks using any input image
+size end-to-end. This method exploits the locality of most operations in
+modern convolutional neural networks by tiling the forward and backward
+pass in combination with gradient checkpointing. Gradient checkpointing
+is a technique where instead of keeping all intermediate feature maps in
+memory to calculate the gradients, we save some specific feature maps
+(checkpoints). We recalculate the others by performing partial forward
+passes starting from the saved feature maps during backpropagation, once
+they are needed for gradient calculation<span class="citation"
+data-cites="Chen2016a"><sup>6</sup></span>. We first empirically
+established equivalence between our tile-based approach and an
+unmodified convolutional neural network on a subset of ImageNet,
+ImageNette<span class="citation"
+data-cites="Howard2019"><sup>7</sup></span>. Then we applied this method
+to two public datasets: the CAMELYON17 dataset<span class="citation"
+data-cites="Litjens2018"><sup>8</sup></span> for metastases detection in
+lymph nodes, and the TUPAC16 dataset<span class="citation"
+data-cites="Veta2019"><sup>9</sup></span> for predicting a proliferation
+score based on gene expression. In both cases, task-specific performance
+increased with larger input image sizes.</p>
+<h1 id="related-work">Related work</h1>
+<p>Several authors have suggested approaches to train convolutional
+neural networks (CNNs) with large input images while preventing memory
+bottlenecks. Their methods can be roughly grouped into three categories:
+(A) altering the dataset, (B) altering usage of the dataset, and (C)
+altering the network or underlying implementations.</p>
+<h2 id="altering-the-dataset">Altering the dataset</h2>
+<p>If images are too large to fit in the memory of the processing unit,
+we could downsample the image or divide the image into smaller parts,
+i.e., patches. The latter approach has been prevalent in both remote
+sensing and medical imaging<span class="citation"
+data-cites="Ma2019 Litjens2017"><sup>10,11</sup></span>. However, both
+approaches have significant drawbacks: the former results in a loss of
+local details, whereas the latter results in losing global contextual
+information.</p>
+<p>The common approach of training on patches typically involves
+creating labels for every patch, which can be time- and cost-intensive.
+It is sometimes not even possible to produce patch-level labels: if a
+hypothetical task is to predict whether an aerial image shows a city or
+a village, it is impossible to create informative labels for individual
+patches only containing several houses.</p>
+<h2 id="altering-usage-of-the-dataset">Altering usage of the
+dataset</h2>
+<p>When we can assume that individual patches contain enough information
+to predict the image-level label, the classification can be formalized
+under the classic multiple-instance-learning (MIL) paradigm. In MIL,
+each image is considered a bag consisting of patches where a positive
+bag has at least one positive patch and a negative bag none. In the deep
+learning case, a model is trained in a weakly supervised manner on
+patches, where the patch with the highest predicted probability is used
+for backpropagation<span class="citation"
+data-cites="Campanella2019 Courtiol2018"><sup>12,13</sup></span>. Other
+approaches involve taking the average of the patch predictions or a
+learned weighted average from low-dimensional patch embeddings<span
+class="citation"
+data-cites="Quellec2017 Ilse2018 Couture2018 Ianni2020 Hou2016"><sup>14–18</sup></span>.</p>
+<p>In this approach, the receptive field of a network is always at most
+the size of the patch. The model disregards spatial relationships
+between patches, limiting the incorporation of contextual
+information.</p>
+<p>By first learning to decide which regions should be analyzed at a
+higher resolution, the problem that a full image cannot be used can also
+be circumvented<span class="citation"
+data-cites="Dong2018 Mnih2014 Katharopoulos2019 Recasens2018"><sup>19–22</sup></span>.
+Since these methods use a low-resolution version of the image to decide
+which parts need to be analyzed at a higher resolution, the
+low-resolution image needs to have enough information to localize the
+area that needs to be classified. Additionally, for analysis of the
+selected areas, these methods still use patch-based analysis with the
+same caveats as mentioned before.</p>
+<p>Another way to utilize datasets with large images is proposed by
+Tellez et al.<span class="citation"
+data-cites="Tellez2019"><sup>23</sup></span>. To compress the image to a
+lower-dimensional space, they proposed unsupervised learning. The model
+is trained patch-by-patch to reconstruct the original patch. An
+intermediate feature map of the model (i.e., the embedding) can
+subsequently be used as a lower-dimensional representation per patch.
+After training, the whole image is compressed patch-by-patch. A model is
+subsequently trained on these embeddings, having the receptive field of
+the whole image while requiring less memory.</p>
+<p>Since the compression network is trained by reconstruction, the same
+compression network can be used for different tasks. However, this means
+that the low-dimensional embedding is not meant for a specific task and
+may have compressed away useful information. Our approach involves one
+network which learns to compress task-relevant information.</p>
+<h2 id="altering-the-network-or-underlying-implementations">Altering the
+network or underlying implementations</h2>
+<p>The memory bottleneck can also be circumvented with memory-efficient
+architectures or memory-efficient implementations of existing
+architectures. Recently, Gomez et al.<span class="citation"
+data-cites="Gomez2017"><sup>24</sup></span> published a method to train
+deep residual neural networks using less memory, termed the Reversible
+Residual Network. With these networks, some layer activations are
+recomputed from others on demand, reducing the total memory required.
+Network architectures can also be altered to utilize cheaper
+computational operation, such as depthwise separable convolutions<span
+class="citation" data-cites="Chollet2017"><sup>25</sup></span> or fewer
+parameters<span class="citation"
+data-cites="Tan2019"><sup>26</sup></span>. Our method does not require
+reducing the number of parameters and works with most types of layers.
+Another method to reduce memory usage is to recover intermediate
+activations by doing partial forward passes during backpropagation,
+termed gradient checkpointing<span class="citation"
+data-cites="Chen2016a"><sup>6</sup></span>. This method is similar to
+our approach, but the whole activation feature map of some layers still
+need to be stored in memory, limiting the use of multi-megapixel
+images.</p>
+<p>Another memory-saving approach is to share memory between tensors
+with duplicate or recomputable values<span class="citation"
+data-cites="Huang2017 Bulo2018"><sup>27,28</sup></span>, to develop
+neural networks with reduced precision using half-precision or mixed
+precision<span class="citation"
+data-cites="Vanhoucke2011"><sup>29</sup></span>, or to swap data between
+random access memory (RAM) and graphics processing unit (GPU)
+memory<span class="citation"
+data-cites="Zhang2019"><sup>30</sup></span>. These methods are usually
+insufficient for training with large multi-megapixel images; our
+proposed method can work orthogonally to them.</p>
+<h1 id="methods">Methods</h1>
+<p>To achieve our goal of training CNNs with multi-megapixel images, we
+significantly reduce the memory requirements. Memory demand is typically
+highest in the first few layers of state-of-the-art CNNs before several
+pooling layers are applied because the intermediate activation maps are
+large. These activation maps require much less memory in subsequent
+layers. We propose to construct these later activations by streaming the
+input image through the CNN in a tiled fashion, changing the memory
+requirement of the CNN to be based on the size of the tile and not the
+input image. This method allows the processing of input images of any
+size.</p>
+<p>Several problems arise when trying to reconstruct the later
+activation map tile-by-tile. Firstly, convolutional layers handle image
+borders in different ways, either by padding zeros to perform a “same”
+convolution or by reducing the image size to perform a “valid”
+convolution. Secondly, in tile-based processing, border effects occur at
+both the image borders and the tile borders; naive tiling of the input
+image would thus result in incomplete activation maps and gradients for
+backpropagation. Lastly, intermediate feature maps of the tiles still
+need to be stored in memory for backpropagation, which would counteract
+the streaming of tiles. We solve these problems by developing a
+principled method to calculate the required tile overlap throughout the
+network in both the forward and backward pass and by using gradient
+checkpointing.</p>
+<p>We first explain the reconstruction of the intermediate activation
+map in the forward pass in section <a href="#forwardpass"
+data-reference-type="ref" data-reference="forwardpass">3.1</a>, then
+describe the backward pass in section <a href="#backwardpass"
+data-reference-type="ref" data-reference="backwardpass">3.2</a>,
+elaborate on how to calculate the tile overlap in section <a
+href="#calculateoverlap" data-reference-type="ref"
+data-reference="calculateoverlap">3.3</a>, and finish with the
+limitations of this method in section <a href="#limitations"
+data-reference-type="ref" data-reference="limitations">3.4</a>. See
+Figure <a href="#figure:streamingSGD" data-reference-type="ref"
+data-reference="figure:streamingSGD">[figure:streamingSGD]</a> for a
+graphical representation of the method.</p>
+<h2 id="forwardpass">Streaming during the forward pass</h2>
+<p>Without loss of generality, we explain the method in the discrete
+one-dimensional case. Let us define <span class="math inline">\(x \in
+\mathbb{R}^{N}\)</span> as the one-dimensional real-valued vector with
+<span class="math inline">\(N\)</span> elements. In discrete
+one-dimensional space, a “valid” convolution<a href="#fn1"
+class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> (*)
+with a kernel with <span class="math inline">\(n\)</span> weights <span
+class="math inline">\(w \in \mathbb{R}^n\)</span>, and stride 1, is
+defined as:</p>
+<p><span class="math display">\[\label{eq:1}
+(x * w)_k = \sum_{i=0}^{n} w_{i}x_{k+i}\]</span></p>
+<p>where <span class="math inline">\(k \in \{0,\ldots,f\}\)</span> and
+<span class="math inline">\(f=N - n\)</span>, for any kernel with length
+<span class="math inline">\(n \leq N\)</span> (for clarity, we will
+start all indices from 0). Our goal is to decrease the memory load of an
+individual convolution by tiling the input. Following <a href="#eq:1"
+data-reference-type="eqref" data-reference="eq:1">[eq:1]</a>, we can
+achieve the same result as <span class="math inline">\(x * w\)</span>,
+by doing two convolutions on the input: <span
+class="math display">\[\begin{gathered}
+a = \{(x * w)_0,\ldots,(x * w)_{f//2}\} \label{eq:2}\\
+b = \{(x * w)_{f//2+1},\ldots,(x * w)_f\} \label{eq:3}
+\end{gathered}\]</span> where <span class="math inline">\(//\)</span>
+denotes a divide and floor operation.</p>
+<p>By definition of concatenation (<span
+class="math inline">\(\frown\)</span>): <span
+class="math display">\[\label{eq:4}
+\{(x * w)_0,\ldots,(x * w)_f\}= a \frown b\]</span></p>
+<p>To ensure that the concatenation of both tiles results in the same
+output as for the full vector, we need to increase the size of the
+tiles, resulting <span class="math inline">\(o=n-1\)</span> overlapping
+values. The values <span class="math inline">\(\{ x_0,\ldots,x_{f//2+o}
+\}\)</span> are required to calculate <span
+class="math inline">\(a\)</span>, and <span class="math inline">\(\{
+x_{f//2+1-o},\ldots,x_N \}\)</span> for <span
+class="math inline">\(b\)</span>.</p>
+<p>Since the tiles are smaller than the original vector, these separate
+convolutions require less memory when executed in series. By increasing
+the number of tiles, memory requirements for individual convolution
+operations can be reduced even further.</p>
+<p>Without loss of generality, the above can also be extended to
+multiple layers in succession including layers with stride <span
+class="math inline">\(&gt; 1\)</span> (e.g., strided convolutions and
+pooling layers) which are also commonly used in state-of-the-art
+networks.</p>
+<p>When one applies this tiling strategy naively, no memory benefit is
+obtained as each tile’s intermediate activation would still be stored in
+memory to allow for backpropagation. We use gradient checkpointing to
+resolve this: We only store the activations after the concatenation of
+the tiles – where the memory burden is small. This does require
+recalculation of all intermediate activations for all tiles during
+backpropagation, but again, only has a memory requirement of processing
+of a single tile. The trade-off between memory use and re-computation
+can be controlled through the selection of the concatenation point in
+the network.</p>
+<p>From this point onward, the term <em>streaming</em> refers to the
+tiling of a vector, applying kernel operations, and concatenating the
+results.</p>
+<div class="algorithm">
+<p><span class="math inline">\(o\gets[]\)</span> <span
+class="math inline">\(stream\_o\gets\)</span> <code>concat</code><span
+class="math inline">\((o[0..m])\)</span> <span
+class="math inline">\(pred\gets\)</span> <code>forward</code><span
+class="math inline">\((layers[i..n], stream\_o)\)</span> <span
+class="math inline">\(loss\gets\)</span> <code>criterion</code><span
+class="math inline">\((pred)\)</span> <span
+class="math inline">\(g\gets\)</span> <code>backward</code><span
+class="math inline">\((layers[n..i], loss)\)</span> <span
+class="math inline">\(filled\gets[]\)</span></p>
+</div>
+<h2 id="backwardpass">Streaming during backpropagation</h2>
+<p>The backward pass of multiple convolutions can also be calculated by
+utilizing the tiles. To start, let us define <span
+class="math inline">\(p\)</span> as the output after streaming. The
+derivative of a weight in a convolutional kernel is defined as:</p>
+<p><span class="math display">\[% \label{eq:5}
+\Delta w_j = \sum_{i=0}^{\lvert p \rvert-1}
+\begin{cases}
+  \Delta p_i x_{i+j}, &amp; \text{if}\ i - j \geq 0 \text{ and } i - j
+&lt; \lvert p \rvert \\
+%   0 1 2 3 4 = p
+%   - - - - -
+%       0 1 2 = kernel (j - i \geq 0 \text{and} j - i + n &lt; |p|)
+%         0 1 2 = not possible (j + n - i &lt; |p|)
+%              
+%       input (x) = 7
+%       output (p) = 5  
+  0, &amp; \text{otherwise}
+\end{cases}\]</span> where <span class="math inline">\(\lvert
+\cdot\rvert\)</span> denotes the length of a vector.</p>
+<p>While streaming, this sum has to be reconstructed through the
+summation of the gradients of all tiles, which will result in the same
+gradient again:</p>
+<p><span class="math display">\[\label{eq:6}
+\Delta w_j = \sum_{i=0}^{\lvert a \rvert-1} \Delta a_i x_{i+j} +
+\sum_{i=0}^{\lvert b \rvert-1} \Delta b_i x_{i+j+f//2}\]</span></p>
+<p>The gradient of the input can be calculated with a similar sum, but
+then shifted by the kernel size: <span class="math display">\[%
+\label{eq:7}
+\Delta x_i = \sum_{j=0}^{n-1}
+\begin{cases}
+  w_j\Delta p_{i-j}, &amp; \text{if}\ i-j \geq 0 \text{ and } i - j &lt;
+\lvert p \rvert  \\
+  0, &amp; \text{otherwise}
+\end{cases}
+% w_j\Delta p_{i-n+j}\]</span></p>
+<p>This formula is equal to a convolution with a flipped kernel <span
+class="math inline">\(w\)</span> on <span class="math inline">\(\Delta
+p\)</span> padded with <span class="math inline">\(n - 1\)</span> zeros
+(e.g., <span class="math inline">\(flip(w) * [0, 0, \Delta p_1 ...
+\Delta p_n, 0, 0]\)</span>, when <span
+class="math inline">\(n=3\)</span>), often called a “full” convolution.
+Thus, analog to the forward pass, the backpropagation can also be
+streamed.</p>
+<p>However, overlapping values of the output <span
+class="math inline">\(p\)</span> are required when streaming the
+backpropagation, similar to the overlapping values of the input <span
+class="math inline">\(x\)</span> required in the forward pass. To
+generate overlapping values for the output <span
+class="math inline">\(p\)</span>, the overlap <span
+class="math inline">\(o\)</span> for the input <span
+class="math inline">\(x\)</span> needs to be increased to calculate the
+full <span class="math inline">\(\Delta x\)</span>.<a href="#fn2"
+class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<div class="figure*">
+<p><img src="chpt2_imgs/1dexample.png" /></p>
+</div>
+<h2 id="calculateoverlap">Efficiently calculating required tile overlap
+for complex architectures</h2>
+<p>Some recent state-of-the-art networks (e.g., ResNet and DenseNet)
+contain different paths through the network that sum or concatenate
+activations from different layers together. These paths make it
+difficult to manually calculate the required tile overlap for
+streaming.</p>
+<p>To calculate the overlap for such networks, we temporarily replace
+all convolutional kernel parameters with <span
+class="math inline">\(\frac{1}{n}\)</span>, where <span
+class="math inline">\(n\)</span> was the length of the kernel. This
+causes each entry in the convolutional layer’s output to be the average
+of the input image spanned by the convolutional kernel. We then pass an
+all-ones tile through the network. The required overlap will be the
+number of non-maximum values in the activation maps and gradients at the
+border of the tiles, see Algorithm <a href="#algorithm:crop"
+data-reference-type="ref"
+data-reference="algorithm:crop">[algorithm:crop]</a>.</p>
+<div class="algorithm">
+<p><span class="math inline">\(output\_stride\gets 1\)</span> <span
+class="math inline">\(o\gets\)</span> <code>forward</code><span
+class="math inline">\((layers[i..n], o)\)</span> <span
+class="math inline">\(loss\gets\)</span> <code>criterion</code><span
+class="math inline">\((o)\)</span> <span
+class="math inline">\(g\gets\)</span> <code>backward</code><span
+class="math inline">\((layers[n..i], loss)\)</span></p>
+</div>
+<p><img src="chpt2_imgs/constant_input_size.png" /><br />
+</p>
+<h2 id="limitations">Limitations</h2>
+<p>With small tiles, the overlap can be a significant part of the tile,
+counteracting the memory gains. Since we leverage the method for
+high-resolution images using large tiles, the memory gains outweigh this
+overhead.</p>
+<p>Furthermore, due to the use of gradient checkpointing, the method
+will perform multiple forward and backward operations to calculate
+intermediate activations. This results in longer processing time than it
+would take if the image could fit on the GPU (see Fig. <a
+href="#fig:constant_input" data-reference-type="ref"
+data-reference="fig:constant_input">[fig:constant_input]</a> and <a
+href="#fig:constant_tile" data-reference-type="ref"
+data-reference="fig:constant_tile">[fig:constant_tile]</a>). The
+processing time increases almost linearly with input size plus
+overlap.</p>
+<p>For a network to be able to use this method, the intermediate feature
+maps and its gradients have to be able to fit on the GPU at a certain
+point. However, choosing a layer too deep into the network will require
+a lot of overlapping calculations, being less efficient. As such,
+choosing which layers to stream can be difficult. We suggest splitting
+the network and experimenting with random input to the final
+non-streaming layers to test if backpropagation fits on the GPU. Then,
+streaming the first layers with a tile size as large as possible.</p>
+<p>Finally, since the method relies on the local properties of
+convolutions and pooling operations, trying to use other operations that
+break this locality will result in invalid results (e.g., operations
+that rely on all the feature map values such as BatchNormalization<span
+class="citation" data-cites="Ioffe2015"><sup>31</sup></span>). However,
+these operations can be used as soon as the whole feature map is
+reconstructed, after streaming, in the final part of the network.</p>
+<p><img src="chpt2_imgs/constant_tile_size.png" /><br />
+</p>
+<h1 id="evaluation">Evaluation</h1>
+<p>We evaluated the streaming method with three different datasets and
+network architectures. First, in Section <a href="#section:imagenette"
+data-reference-type="ref" data-reference="section:imagenette">5</a>, we
+evaluated whether a CNN using streaming trains equivalently to the
+conventional training. Second, in Section <a href="#section:tupac"
+data-reference-type="ref" data-reference="section:tupac">6</a>, we
+evaluated the usage of streaming on a regression task in the public
+TUPAC16<span class="citation" data-cites="Veta2019"><sup>9</sup></span>
+dataset with high-resolution images (multiple gigapixels) and only
+image-level labels. We trained multiple networks using increasing image
+resolutions and network depth. Finally, in Section <a
+href="#section:camyleon" data-reference-type="ref"
+data-reference="section:camyleon">7</a>, we evaluated streaming in a
+classification task using the image-level labels of the CAMELYON17
+dataset<span class="citation"
+data-cites="Bandi2019"><sup>32</sup></span>.</p>
+<p>An open-source implementation of the streaming algorithm and the
+ImageNette experiments can be found at <a
+href="https://github.com/DIAGNijmegen/StreamingCNN"
+class="uri">https://github.com/DIAGNijmegen/StreamingCNN</a>.</p>
+<h1 id="section:imagenette">Experiments on ImageNette</h1>
+<p>We trained a CNN on small images using streaming and conventional
+training starting from the same initialization. We used a subset of the
+ImageNet dataset, ImageNette, using 10 ImageNet classes (tench, English
+springer, cassette player, chain saw, church, French horn, garbage
+truck, gas pump, golf ball, parachute), analog to<span class="citation"
+data-cites="Howard2019"><sup>7</sup></span>.</p>
+<div id="tab:imagenetnet">
+<table>
+<caption>Network architecture for Imagenette experiment</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><strong>Layers</strong></th>
+<th style="text-align: left;"><strong>Kernel size</strong></th>
+<th style="text-align: left;"><strong>Channels</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2D convolution</td>
+<td style="text-align: left;">3x3</td>
+<td style="text-align: left;">16</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2D max-pool</td>
+<td style="text-align: left;">2x2</td>
+<td style="text-align: left;">16</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2D convolution</td>
+<td style="text-align: left;">3x3</td>
+<td style="text-align: left;">32</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2D max-pool</td>
+<td style="text-align: left;">2x2</td>
+<td style="text-align: left;">32</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2D convolution</td>
+<td style="text-align: left;">3x3</td>
+<td style="text-align: left;">64</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2D max-pool</td>
+<td style="text-align: left;">2x2</td>
+<td style="text-align: left;">64</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2D convolution</td>
+<td style="text-align: left;">3x3</td>
+<td style="text-align: left;">128</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2D max-pool</td>
+<td style="text-align: left;">2x2</td>
+<td style="text-align: left;">128</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2D convolution</td>
+<td style="text-align: left;">3x3</td>
+<td style="text-align: left;">256</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2D max-pool</td>
+<td style="text-align: left;">10x10</td>
+<td style="text-align: left;">256</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Fully connected</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="data-preparation">Data preparation</h2>
+<p>We used data augmentation for the training set following Szegedy et
+al.<span class="citation" data-cites="Szegedy2015"><sup>33</sup></span>.
+Patches of varying sizes were sampled from the image, distributed evenly
+between 8% and 100% of the image area with aspect ratio constrained to
+the interval <span class="math inline">\([\frac{3}{4},
+\frac{4}{3}]\)</span>. For the tuning set, we sampled 320<span
+class="math inline">\(\times\)</span><!-- -->320 patches from the center
+of the image.</p>
+<h2 id="network-architecture-and-training-scheme">Network architecture
+and training scheme</h2>
+<p>The CNN consisted of five blocks of a convolutional layer followed by
+a max-pool layer (see Table <a href="#tab:imagenetnet"
+data-reference-type="ref" data-reference="tab:imagenetnet">1</a>). The
+network was optimized for 200 epochs with stochastic gradient descent,
+using a learning rate of <span class="math inline">\(1 \times
+10^{-3}\)</span>, a mini-batch size of 32 images and weight decay <span
+class="math inline">\(1 \times 10^{-6}\)</span>. For the streaming
+method, the first four layers were streamed with tiles of 32<span
+class="math inline">\(\times\)</span><!-- -->32 pixels. The network was
+initialized according to He et al., 2015<span class="citation"
+data-cites="He:2015:DDR:2919332.2919814"><sup>34</sup></span>.</p>
+<p><img src="chpt2_imgs/streamingvsnormal_rebuttal.png" /><br />
+<img src="chpt2_imgs/streamingvsnormal_accuracy_rebuttal.png" /></p>
+<h2 id="results-on-imagenette">Results on Imagenette</h2>
+<p>The loss curves of both methods (Figure <a
+href="#figure:imagenette_exp" data-reference-type="ref"
+data-reference="figure:imagenette_exp">[figure:imagenette_exp]</a>) were
+nearly identical, which empirically shows that training with streaming
+performed equivalently to conventional training. Small differences are
+likely due to losses of significance in floating point arithmetic; these
+differences accumulate during training and lead to small differences in
+loss values in later epochs.</p>
+<h1 id="section:tupac">Experiments on TUPAC16 dataset</h1>
+<p>To evaluate our method on a real-world task, we used the publicly
+available dataset of the TUPAC16 challenge<span class="citation"
+data-cites="Veta2019"><sup>9</sup></span>. This dataset consists of 500
+hematoxylin and eosin (H&amp;E) stained whole-slide images (WSI) from
+breast adenocarcinoma patients. The WSIs of these patients are available
+from The Cancer Genome Atlas<span class="citation"
+data-cites="Weinstein2013"><sup>35</sup></span> together with RNA
+expression profiles. The expression of 11 proliferation-associated genes
+was combined to create one objective measure for tumor growth, termed
+the PAM50 score<span class="citation"
+data-cites="Nielsen2010"><sup>36</sup></span>. This score has no known
+visual substrate in the images. Thus, manual labeling is considered
+impossible. We set aside 98 WSIs at random for tuning the algorithm and
+used the remaining slides for training. Additionally, an independent
+evaluation was performed by the challenge organizers on the test set of
+321 WSIs, of which the public ground truth is not available. The
+submitted predictions were evaluated using Spearman’s rank-order
+correlation between the prediction and the ground truth.</p>
+<div id="tab:extset">
+<table>
+<caption>Network architecture for TUPAC16 experiments.</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Layers</strong></td>
+<td style="text-align: left;"><strong>Kernel</strong></td>
+<td style="text-align: left;"><strong>Channels</strong></td>
+<td style="text-align: left;"><strong>Details</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2x 2D convolution</td>
+<td style="text-align: left;">3x3</td>
+<td style="text-align: left;">32</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2D max-pool</td>
+<td style="text-align: left;">2x2</td>
+<td style="text-align: left;">32</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2x 2D convolution</td>
+<td style="text-align: left;">3x3</td>
+<td style="text-align: left;">64</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2D max-pool</td>
+<td style="text-align: left;">2x2</td>
+<td style="text-align: left;">64</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2x 2D convolution</td>
+<td style="text-align: left;">3x3</td>
+<td style="text-align: left;">128</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2D max-pool</td>
+<td style="text-align: left;">2x2</td>
+<td style="text-align: left;">128</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2x 2D convolution</td>
+<td style="text-align: left;">3x3</td>
+<td style="text-align: left;">256</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2D max-pool</td>
+<td style="text-align: left;">2x2</td>
+<td style="text-align: left;">256</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2x 2D convolution</td>
+<td style="text-align: left;">3x3</td>
+<td style="text-align: left;">512</td>
+<td style="text-align: left;">repeated for</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2D max-pool</td>
+<td style="text-align: left;">2x2</td>
+<td style="text-align: left;">512</td>
+<td style="text-align: left;">field of view experiment</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2x 2D convolution</td>
+<td style="text-align: left;">3x3</td>
+<td style="text-align: left;">512</td>
+<td style="text-align: left;">with BatchNormalization</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2D max-pool</td>
+<td style="text-align: left;">2x2</td>
+<td style="text-align: left;">512</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2x 2D convolution</td>
+<td style="text-align: left;">3x3</td>
+<td style="text-align: left;">512</td>
+<td style="text-align: left;">with BatchNormalization</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2D max-pool</td>
+<td style="text-align: left;">input size</td>
+<td style="text-align: left;">512</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dropout (p=0.5)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">512</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Fully connected</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">continuous output,</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">without non-linearity</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>To evaluate whether CNN models can leverage and use the higher
+resolution information that streaming makes possible, we performed two
+sets of experiments to end-to-end predict the PAM50 score. For one, we
+trained the same model with various image sizes (1024<span
+class="math inline">\(\times\)</span><!-- -->1024, 2048<span
+class="math inline">\(\times\)</span><!-- -->2048, and 4096<span
+class="math inline">\(\times\)</span><!-- -->4096 pixels), thus
+increasing input image resolution. Different networks were trained in
+the second set, where the depth was increased with image size (22, 25,
+and 28 layers for respectively 2048<span
+class="math inline">\(\times\)</span><!-- -->2048, 4096<span
+class="math inline">\(\times\)</span><!-- -->2096, and 8192<span
+class="math inline">\(\times\)</span><!-- -->8192). By also increasing
+the depth, the physical receptive field size before the last max-pool
+layer is kept constant (see Table <a href="#tab:extset"
+data-reference-type="ref" data-reference="tab:extset">2</a>). All
+networks were trained until convergence; the checkpoint with the highest
+Spearman’s correlation coefficient on the tuning set was submitted for
+independent evaluation on the test set.</p>
+<h2 id="data-preparation-1">Data preparation</h2>
+<p>The images were extracted from the WSIs at image spacing <span
+class="math inline">\(16.0\mu m\)</span> for the 1024<span
+class="math inline">\(\times\)</span><!-- -->1024 experiments, <span
+class="math inline">\(8.0\mu m\)</span> for 2048<span
+class="math inline">\(\times\)</span><!-- -->2048, etc. (see Figure <a
+href="#fig:resolutions" data-reference-type="ref"
+data-reference="fig:resolutions">[fig:resolutions]</a>). Background
+regions were cropped, and the resulting image was either randomly
+cropped or zero-padded to the predefined input size.</p>
+<p>Since the challenge consists of a limited number of slides, we
+applied extensive data augmentations to increase the sample size (random
+rotations; random horizontal or vertical flipping; random brightness,
+contrast, saturation, and hue shifts; elastic transformations; and
+cutout<span class="citation"
+data-cites="DeVries2017"><sup>37</sup></span>). For all experiments, the
+same hyperparameters and data preprocessing were used.</p>
+<h2 id="network-architecture-and-training-scheme-1">Network architecture
+and training scheme</h2>
+<p>The networks (see Table <a href="#tab:extset"
+data-reference-type="ref" data-reference="tab:extset">2</a>) were
+trained using the Adam optimizer<span class="citation"
+data-cites="Kingma2015"><sup>38</sup></span> with a learning rate of
+<span class="math inline">\(1 \times 10^{-4}\)</span>, with the default
+<span class="math inline">\(\beta\)</span> parameters of <span
+class="math inline">\(\beta_1=0.9\)</span>, <span
+class="math inline">\(\beta_2=0.999\)</span>. We applied exponential
+decay to the learning rate of 0.99 per epoch. As an objective, we used
+the Huber loss with <span class="math inline">\(\Delta=1\)</span>, also
+called the smooth L1 loss<span class="citation"
+data-cites="Girshick:2015:FR:2919332.2920125"><sup>39</sup></span>. The
+mini-batch size was 16 images. A dropout layer with <span
+class="math inline">\(p=0.5\)</span> was inserted before the final
+classification layer. The networks were initialized following He et al.,
+2015<span class="citation"
+data-cites="He:2015:DDR:2919332.2919814"><sup>34</sup></span>. The
+images were normalized using the mean and standard deviation values of
+the whole training set.</p>
+<p>Streaming was applied until the final seven layers. Since
+BatchNormalization breaks the local properties of chained convolutional
+and pooling layers, it was only used in the last part of the network.
+Analysis of Santurkar et al.<span class="citation"
+data-cites="Santurkar2018"><sup>40</sup></span> suggests that adding
+only a few BatchNormalization layers towards the end of the network
+smooths the loss function significantly and helps optimization.</p>
+<h2 id="results-on-tupac16">Results on TUPAC16</h2>
+<p>The task was evaluated using Spearman’s correlation coefficient
+between the prediction and the ground truth PAM50 proliferation scores.
+In both experiments, an improvement of the metric was seen with
+increasing input sizes.</p>
+<div id="tab:tupacresults">
+<table>
+<caption>TUPAC16: performance of the models on the independent test
+test, Spearman’s rho correlation coefficient</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><strong>Experiment</strong></th>
+<th style="text-align: left;"><strong>Input size</strong></th>
+<th style="text-align: left;"><strong>Test set performance</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Equal number of parameters</td>
+<td style="text-align: left;">1024x1024</td>
+<td style="text-align: left;">0.485 (0.441-0.527)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">2048x2048</td>
+<td style="text-align: left;">0.491 (0.448-0.533)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">4096x4096</td>
+<td style="text-align: left;">0.536 (0.495-0.575)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Equal field of view before global max-pool
+(increasing depth)</td>
+<td style="text-align: left;">2048x2048</td>
+<td style="text-align: left;">0.491 (0.448-0.533)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">4096x4096</td>
+<td style="text-align: left;">0.570 (0.531-0.606)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">8192x8192</td>
+<td style="text-align: left;">0.560 (0.520-0.597)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The result of the network with the input image resolution of
+4096<span class="math inline">\(\times\)</span><!-- -->4096 approached
+state-of-the-art for image-level regression with a score of 0.570. Note
+that the first entry of the leaderboard used an additional set of manual
+annotations of mitotic figures and is therefore not directly comparable
+to our experiments.</p>
+<div id="tab:tupacleaderboard">
+<table>
+<caption>*method uses additional detailed annotations from another task
+in the challenge and does not train a single model to predict from slide
+to PAM50 score.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><strong>Experiment</strong></th>
+<th style="text-align: left;"><strong>Corr. coefficient</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Lunit Inc., South Korea<span
+class="citation"
+data-cites="Paeng2016 Veta2019"><sup>9,41</sup></span></td>
+<td style="text-align: left;">0.617*</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Ours (4096x4096)</strong></td>
+<td style="text-align: left;"><strong>0.570</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Ours (8192x8192)</strong></td>
+<td style="text-align: left;"><strong>0.560</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Tellez et al., 2019<span class="citation"
+data-cites="Tellez2019"><sup>23</sup></span></td>
+<td style="text-align: left;">0.557</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Radboud UMC Nijmegen, The Netherlands<span
+class="citation" data-cites="Veta2019"><sup>9</sup></span></td>
+<td style="text-align: left;">0.516</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Contextvision, Sweden<span
+class="citation" data-cites="Veta2019"><sup>9</sup></span></td>
+<td style="text-align: left;">0.503</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Belarus National Academy of Sciences<span
+class="citation" data-cites="Veta2019"><sup>9</sup></span></td>
+<td style="text-align: left;">0.494</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">The Harker School, United States<span
+class="citation" data-cites="Veta2019"><sup>9</sup></span></td>
+<td style="text-align: left;">0.474</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h1 id="section:camyleon">Experiments on CAMELYON17 dataset</h1>
+<p>CAMELYON17 was used to evaluate the streaming method on a
+classification task<span class="citation"
+data-cites="Bandi2019"><sup>32</sup></span>. CAMELYON17 is a large
+public dataset and challenge to detect metastases of adenocarcinoma in
+breast tissue. The dataset consists of 500 labelled WSIs and 500
+unlabeled WSIs, which were respectively used as the training and test
+sets. In the training set, for 450 slides image-level labels were
+provided, while for the remaining 50 slides dense annotations (precise
+delineation of the metastases) were supplied. The slides were collected
+from five different hospitals. The challenge differentiates three
+clinical relevant metastases types: macro-metastases (<span
+class="math inline">\(&gt;\)</span> 2 mm), micro-metastases (<span
+class="math inline">\(\leq\)</span> 2.0 mm or <span
+class="math inline">\(&gt;\)</span> 200 cells in a single
+cross-section), and isolated tumor cells (<span
+class="math inline">\(\leq\)</span> 0.2 mm or <span
+class="math inline">\(&lt;\)</span> 200 cells in a single
+cross-section). We evaluate the slide level classification performance
+with multiple ROC analyses (metastasis-type vs. the negative class, and
+negative versus all positive classes).</p>
+<p>Data preparation for this experiment was equal to the TUPAC16
+challenge. We picked 90 WSIs of the challenge training set at random to
+be used as our tuning set.</p>
+<p>Confidence intervals were obtained through bootstrapping of the test
+set, ensuring the same sampling across the different resolutions.
+Furthermore, we performed a permutation test to assess statistical
+significance.</p>
+<h2 id="network-architecture-and-training-scheme-2">Network architecture
+and training scheme</h2>
+<p>We used the same training schedule and underlying architecture as the
+TUPAC16 experiments. We altered the architecture by disabling dropout,
+and to reduce problems with exploding gradients in the beginning of the
+network, we replaced BatchNormalization with weight decay of <span
+class="math inline">\(1 \times 10^{-6}\)</span> and layer-sequential
+unit-variance (LSUV) initialization<span class="citation"
+data-cites="Mishkin2015"><sup>42</sup></span>. We applied the LSUV
+scaling per kernel channel<span class="citation"
+data-cites="Krahenbuhl2015"><sup>43</sup></span>. The mean and standard
+deviation per layer activation were calculated over ten mini-batches by
+keeping track of the sum and squares of the channels per tile during
+streaming; the reformulation of variance as <span
+class="math inline">\(\mathbb{E}[X^2] - \mu^2\)</span> was used to
+calculate the full standard deviation of ten mini-batches before
+applying LSUV.</p>
+<div class="table*">
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Input</strong></td>
+<td style="text-align: left;"><strong>Negative</strong></td>
+<td style="text-align: left;"><strong>Isolated tumor cells</strong></td>
+<td style="text-align: left;"><strong>Micro-metastases</strong></td>
+<td style="text-align: left;"><strong>Macro-metastases</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">n=260</td>
+<td style="text-align: left;">n=35</td>
+<td style="text-align: left;">n=83</td>
+<td style="text-align: left;">n=122</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2048<span
+class="math inline">\(^2\)</span></td>
+<td style="text-align: left;">0.580 (0.529-0.628)</td>
+<td style="text-align: left;">0.450 (0.363-0.539)</td>
+<td style="text-align: left;">0.689 (0.620-0.755)</td>
+<td style="text-align: left;">0.515 (0.451-0.577)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4096<span
+class="math inline">\(^2\)</span></td>
+<td style="text-align: left;">0.648 (0.601-0.696,
+p<sub>1</sub>=0.03)</td>
+<td style="text-align: left;"><strong>0.533</strong> (0.422-0.642,
+p<sub>1</sub>=0.13)</td>
+<td style="text-align: left;">0.669 (0.602-0.733,
+p<sub>1</sub>=0.65)</td>
+<td style="text-align: left;">0.663 (0.603-0.719,
+p<sub>1</sub>&lt;0.001)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">8192<span
+class="math inline">\(^2\)</span></td>
+<td style="text-align: left;"><strong>0.706</strong> (0.660-0.751,
+p<sub>1</sub>&lt;0.001, p<sub>2</sub>=0.06)</td>
+<td style="text-align: left;">0.463 (0.359-0.569, p<sub>1</sub>=0.43,
+p<sub>2</sub>=0.83)</td>
+<td style="text-align: left;"><strong>0.709</strong> (0.645-0.769,
+p<sub>1</sub>=0.35, p<sub>2</sub>=0.22)</td>
+<td style="text-align: left;"><strong>0.827</strong> (0.777-0.874,
+p<sub>1</sub>&lt;0.001, p<sub>2</sub>&lt;0.001)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="results-on-camelyon17">Results on CAMELYON17</h2>
+<p>The network trained with 8192<span
+class="math inline">\(\times\)</span><!-- -->8192 images is
+significantly better than the models trained with 4096<span
+class="math inline">\(\times\)</span><!-- -->4096 images in the
+discriminating macro-metastases from negative cases, and significantly
+better than the 2048<span
+class="math inline">\(\times\)</span><!-- -->2048 model in
+discriminating negative cases from cases with any metastasis.</p>
+<h2 id="saliency-maps">Saliency maps</h2>
+<p>Saliency maps were created for the networks trained with the largest
+resolution (8192<span class="math inline">\(\times\)</span><!-- -->8192
+pixels) according to Simonyan et al.<span class="citation"
+data-cites="Simonyan2013"><sup>44</sup></span>. For better visualization
+on lower resolution, a Gaussian blur was applied with <span
+class="math inline">\(\sigma = 50\)</span> for 8192<span
+class="math inline">\(\times\)</span><!-- -->8192 network, <span
+class="math inline">\(\sigma = 25\)</span> for the 4096<span
+class="math inline">\(\times\)</span><!-- -->4096 models, and <span
+class="math inline">\(\sigma = 12,5\)</span> for the 2048<span
+class="math inline">\(\times\)</span><!-- -->2048 models. Since a few
+gradient values can be significantly higher than others, we capped the
+upper gradient values at the 99<sup>th</sup> percentile<span
+class="citation" data-cites="Smilkov2017"><sup>45</sup></span>. The
+upper 50<sup>th</sup> percentile was overlayed on top of the original
+image (See Figure <a href="#figure:saliency" data-reference-type="ref"
+data-reference="figure:saliency">2</a>).</p>
+<figure>
+<img src="chpt2_imgs/comparison_tupac.jpg" id="figure:saliency"
+alt="Saliency maps for test set images of the TUPAC16 experiment using the best performing models. The TUPAC16 network shows highlights in cell-dense and cancerous regions. There is a trend in which the higher the input solution of the model, the less it focuses on healthy tissue. Also, higher resolution models focus on more locations of the tissue." />
+<figcaption aria-hidden="true">Saliency maps for test set images of the
+TUPAC16 experiment using the best performing models. The TUPAC16 network
+shows highlights in cell-dense and cancerous regions. There is a trend
+in which the higher the input solution of the model, the less it focuses
+on healthy tissue. Also, higher resolution models focus on more
+locations of the tissue.</figcaption>
+</figure>
+<figure>
+<img src="chpt2_imgs/comparisoncam_rebuttal.jpg" id="figure:saliency"
+alt="Saliency maps for images of the tuning set of the CAMELYON17 experiment. The highest resolution model, trained on image-level labels shows highlights corresponding to the ground truth pixel-level annotation of a breast cancer metastasis. The lower resolution models have lower probability for the ground truth class and show little correspondence to the location of the metastases. The last row shows a micro metastasis for which models failed to recognize." />
+<figcaption aria-hidden="true">Saliency maps for images of the tuning
+set of the CAMELYON17 experiment. The highest resolution model, trained
+on image-level labels shows highlights corresponding to the ground truth
+pixel-level annotation of a breast cancer metastasis. The lower
+resolution models have lower probability for the ground truth class and
+show little correspondence to the location of the metastases. The last
+row shows a micro metastasis for which models failed to
+recognize.</figcaption>
+</figure>
+<h1 id="discussion-and-conclusion">Discussion and conclusion</h1>
+<p>We presented a novel streaming method to train CNNs with tiled
+inputs, allowing inputs of arbitrary size. We showed that the
+reconstructed gradients of the neural network weights using tiles were
+equivalent to those obtained with non-tiled inputs.</p>
+<p>In the first experiment on ImageNette, we empirically showed that the
+training behavior of our proposed streaming method was similar to the
+behavior in the non-streaming case. Small differences occur later in
+training due to loss of significance in floating-point arithmetic. These
+differences accumulated during training and lead to the small difference
+in loss values in later epochs. However, they do not seem to harm
+performance. Most modern frameworks have similar problems due to their
+use of non-deterministic operations.</p>
+<p>The second and third experiments showed that our streaming method can
+train CNNs with multi-megapixel images that, due to memory requirements
+in the non-streaming case, would not be able to fit on current hardware.
+When trained using the conventional method, without streaming, the
+experiment with the highest-resolution images (<span
+class="math inline">\(8192 \times 8192\)</span> pixels) would require
+~50 gigabytes per image, summing up to ~825 gigabytes of memory per
+mini-batch.</p>
+<p>Results on the TUPAC16 dataset (Table <a href="#tab:tupacresults"
+data-reference-type="ref" data-reference="tab:tupacresults">3</a>)
+showed an increasing correlation between the prediction and the
+proliferation score with increasing input sizes. Our 4096<span
+class="math inline">\(\times\)</span><!-- -->4096 pixel network
+performed best. A jump in performance from 0.491 to 0.570 was seen from
+2048<span class="math inline">\(\times\)</span><!-- -->2048 to 4096<span
+class="math inline">\(\times\)</span><!-- -->4096 pixels, respectively.
+We hypothesize that this is because tumor tissue can be discriminated
+from other types of tissue at these higher resolutions. However, an
+8192<span class="math inline">\(\times\)</span><!-- -->8192 pixel input
+size did not further improve the performance on the test set, although
+the difference is minor, and the confidence interval is quite wide and
+overlapping. The nuclear details of cells at this resolution remain
+vague, which suggests that most of the information is still obtained
+from the morphology like in 4096<span
+class="math inline">\(\times\)</span><!-- -->4096 images. Higher
+resolutions may be necessary to further improve performance, although we
+may also have hit the ceiling for the performance of this network
+architecture, training setup, and data. Another explanation for the lack
+of improvement is the increasing difficulty for the network to find the
+sparse information in just 400 slides using a single label or a
+misrepresented tuning set due to the small provided training set. As
+such, it is likely that for some tasks and datasets, higher-resolutions
+are not beneficial. Our best result on TUPAC16 approached that of the
+challenge winner, who used task-specific information (a network trained
+on mitosis detection) instead of a pure regression of one label per WSI.
+Our method outperformed all other methods in the challenge.</p>
+<p>Results on the CAMELYON17 dataset show improvement with increasing
+resolution. An exception occurs for the isolated tumor cells class; even
+at the highest resolution applied, the CNN was unable to differentiate
+isolated tumor cells. To accurately identify lesions of that size, the
+resolution would probably need to be increased by at least a factor of
+four. Furthermore, this class is also underrepresented (n=31) in the
+provided training set. The 8192<span
+class="math inline">\(\times\)</span><!-- -->8192 network was
+significantly better than 4096<span
+class="math inline">\(\times\)</span><!-- -->4096 and 2048<span
+class="math inline">\(\times\)</span><!-- -->2048 in the discriminating
+macro-metastases from negative cases and significantly better than
+2048<span class="math inline">\(\times\)</span><!-- -->2048 in
+discriminating negative cases from cases with any metastasis.</p>
+<div class="figure*">
+<p><img src="chpt2_imgs/tupac_rebuttal.png" /></p>
+</div>
+<p>Using saliency maps, we visualized what the models would change on
+the input to make it more closely resemble the assigned class. These
+maps show us which parts of the image the model takes into
+consideration<span class="citation"
+data-cites="Simonyan2013"><sup>44</sup></span>. Saliency maps of our
+CNNs trained on higher resolutions suggest that the networks learn the
+relevant features of the high-resolution images (see Figure <a
+href="#figure:saliency" data-reference-type="ref"
+data-reference="figure:saliency">2</a>). The image-level trained
+CAMELYON17 network shows highlights corresponding to the ground truth
+pixel-level annotation of a breast cancer metastasis. The TUPAC16
+network shows highlights in cell-dense regions.</p>
+<p>The streaming method has advantages over prior work on this topic.
+For streaming, we do not need to alter the dataset by resizing or
+creating additional pixel-level labels (which is sometimes not
+possible). Also, we do not need to change the usage of the dataset like
+in the MIL paradigm or use compression techniques. Finally, we are not
+limited to specific architectural choices for our network, such as in
+RevNet; streaming can be applied to any state-of-the-art network, such
+as Inception or DenseNet.</p>
+<p>While increasing input sizes and resolutions are beneficial in
+various tasks, there are some drawbacks. A limitation is the increase in
+computation time with increasing input sizes (Fig. <a
+href="#fig:constant_tile" data-reference-type="ref"
+data-reference="fig:constant_tile">[fig:constant_tile]</a>). This can be
+partially counteracted by dividing the batch over multiple GPUs. Due to
+this limitation, we did not increase resolution further in our
+experiments. Future research could attempt to speed up computation on
+the tiles, e.g., by training with mixed precision<span class="citation"
+data-cites="Vanhoucke2011"><sup>29</sup></span> or depthwise separable
+convolutions<span class="citation"
+data-cites="Chollet2017"><sup>25</sup></span>. One could also try to
+start with a pre-trained network (e.g., on ImageNet) and fine-tune for a
+shorter period.</p>
+<p>Another limitation is the inability to use feature map-wide
+operations in the streaming part of the network, e.g.,
+BatchNormalization. In this work, we replaced some benefits of
+BatchNormalization, namely the robustness against bad initialization and
+the regularization, with LSUV initialization and weight decay. Future
+work could focus on normalization techniques that retain the local
+properties of the relation between the output and input of the streaming
+part of the network, e.g., weight normalization<span class="citation"
+data-cites="Salimans2016"><sup>46</sup></span>.</p>
+<p>Although this approach can, in theory, be used for segmentation,
+streaming a segmentation network, such as U-Net<span class="citation"
+data-cites="ronneberger2015u"><sup>47</sup></span>, will require some
+engineering. We would have to stream the encoder, "checkpointing" and
+reconstructing feature maps at the final convolution of every level, for
+the skip connections. Then, we would have to stream the decoding
+separately and carefully supply the spatially correct regions of the
+checkpointed skip connections to each tile. Equally for the
+backpropagation, reconstructing the gradients at the beginning of each
+decode level to make the skip connections work. This would be the case
+for a regular U-Net, if we would add more levels to U-Net, you will have
+to train middle layers without streaming, as the field of view of these
+layers could be too high (requiring a big overlap, making streaming less
+memory efficient).</p>
+<p>Improving the performance of the high-resolution-trained networks
+could be a research topic of interest. In the TUPAC16 and CAMELYON17
+experiments, we increased depth as we increased the input size. However,
+a recent work<span class="citation"
+data-cites="Tan2019"><sup>26</sup></span> – though on a maximum 480<span
+class="math inline">\(\times\)</span><!-- -->480 image size – suggests a
+“compound” scaling rule in which the input resolution is scaled together
+with depth and width of the network.</p>
+<p>This paper focused on streaming two-dimensional images, but since
+convolutions over higher-dimensional data have the same local
+properties, one could leverage the same technique for, for example, 3D
+volumetric radiological images.</p>
+<h1 id="acknowledgements">Acknowledgements</h1>
+<p>The authors would like to thank Erdi Çallı for his help in
+proofreading the equations.</p>
+<div id="refs" class="references csl-bib-body" role="doc-bibliography">
+<div id="ref-Russakovsky2015" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">1. </div><div
+class="csl-right-inline">Russakovsky O, Deng J, Su H, et al.
+<span>ImageNet Large Scale Visual Recognition Challenge</span>.
+<em>International Journal of Computer Vision</em>. 2015;115(3):211-252.
+doi:<a
+href="https://doi.org/10.1007/s11263-015-0816-y">10.1007/s11263-015-0816-y</a></div>
+</div>
+<div id="ref-Krizhevsky2012" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">2. </div><div
+class="csl-right-inline">Krizhevsky A, Sutskever I, Hinton GE. <span
+class="nocase">ImageNet Classification with Deep Convolutional Neural
+Networks</span>. In: <em>Proceedings of the 25th Advances in Neural
+Information Processing Systems</em>.; 2012. <a
+href="http://code.google.com/p/cuda-convnet/ http://papers.nips.cc/paper/4824-imagenet-classification-w%5Cnpapers3://publication/uuid/1ECF396A-CEDA-45CD-9A9F-03344449DA2A">http://code.google.com/p/cuda-convnet/
+http://papers.nips.cc/paper/4824-imagenet-classification-w%5Cnpapers3://publication/uuid/1ECF396A-CEDA-45CD-9A9F-03344449DA2A</a></div>
+</div>
+<div id="ref-He2016" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">3. </div><div class="csl-right-inline">He
+K, Zhang X, Ren S, Sun J. <span class="nocase">Deep residual learning
+for image recognition</span>. In: <em>Proceedings of the IEEE Computer
+Society Conference on Computer Vision and Pattern Recognition</em>. Vol
+2016. IEEE Computer Society; 2016:770-778. doi:<a
+href="https://doi.org/10.1109/CVPR.2016.90">10.1109/CVPR.2016.90</a></div>
+</div>
+<div id="ref-Zagoruyko2016" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">4. </div><div
+class="csl-right-inline">Zagoruyko S, Komodakis N. <span>Wide Residual
+Networks</span>. Published online May 2016. <a
+href="http://arxiv.org/abs/1605.07146">http://arxiv.org/abs/1605.07146</a></div>
+</div>
+<div id="ref-Krizhevsky2009" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">5. </div><div
+class="csl-right-inline">Krizhevsky A. <em><span class="nocase">Learning
+Multiple Layers of Features from Tiny Images</span></em>. University of
+Toronto; 2009.</div>
+</div>
+<div id="ref-Chen2016a" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">6. </div><div class="csl-right-inline">Chen
+T, Xu B, Zhang C, Guestrin C. <span class="nocase">Training Deep Nets
+with Sublinear Memory Cost</span>. <em>arXiv preprint</em>.
+2016;1604.06174. <a
+href="http://arxiv.org/abs/1604.06174">http://arxiv.org/abs/1604.06174</a></div>
+</div>
+<div id="ref-Howard2019" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">7. </div><div
+class="csl-right-inline">Jeremy Howard. <span class="nocase">Imagenette:
+a smaller subset of 10 easily classified classes from Imagenet, and a
+little more French</span>. <a
+href="https://github.com/fastai/imagenette">https://github.com/fastai/imagenette</a></div>
+</div>
+<div id="ref-Litjens2018" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">8. </div><div
+class="csl-right-inline">Litjens G, Bandi P, Bejnordi BE, et al. <span
+class="nocase">1399 H<span>&amp;</span>E-stained sentinel lymph node
+sections of breast cancer patients: The CAMELYON dataset</span>. 2018;7.
+doi:<a
+href="https://doi.org/10.1093/gigascience/giy065">10.1093/gigascience/giy065</a></div>
+</div>
+<div id="ref-Veta2019" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">9. </div><div class="csl-right-inline">Veta
+M, Heng YJ, Stathonikos N, et al. <span class="nocase">Predicting breast
+tumor proliferation from whole-slide images: The TUPAC16
+challenge</span>. <em>Medical Image Analysis</em>. 2019;54:111-121.
+doi:<a
+href="https://doi.org/10.1016/j.media.2019.02.012">10.1016/j.media.2019.02.012</a></div>
+</div>
+<div id="ref-Ma2019" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">10. </div><div class="csl-right-inline">Ma
+L, Liu Y, Zhang X, Ye Y, Yin G, Johnson BA. <span class="nocase">Deep
+learning in remote sensing applications: A meta-analysis and
+review</span>. 2019;152:166-177. doi:<a
+href="https://doi.org/10.1016/j.isprsjprs.2019.04.015">10.1016/j.isprsjprs.2019.04.015</a></div>
+</div>
+<div id="ref-Litjens2017" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">11. </div><div
+class="csl-right-inline">Litjens G, Kooi T, Bejnordi BE, et al. <span
+class="nocase">A survey on deep learning in medical image
+analysis</span>. 2017;42:60-88. doi:<a
+href="https://doi.org/10.1016/j.media.2017.07.005">10.1016/j.media.2017.07.005</a></div>
+</div>
+<div id="ref-Campanella2019" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">12. </div><div
+class="csl-right-inline">Campanella G, Hanna MG, Geneslaw L, et al.
+<span class="nocase">Clinical-grade computational pathology using weakly
+supervised deep learning on whole slide images</span>. <em>Nature
+Medicine</em>. 2019;25(8):1301-1309. doi:<a
+href="https://doi.org/10.1038/s41591-019-0508-1">10.1038/s41591-019-0508-1</a></div>
+</div>
+<div id="ref-Courtiol2018" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">13. </div><div
+class="csl-right-inline">Courtiol P, Tramel EW, Sanselme M, Wainrib G.
+<span class="nocase">Classification and Disease Localization in
+Histopathology Using Only Global Labels: A Weakly-Supervised
+Approach</span>. <em>arXiv preprint</em>. 2018;1802.02212. <a
+href="http://arxiv.org/abs/1802.02212">http://arxiv.org/abs/1802.02212</a></div>
+</div>
+<div id="ref-Quellec2017" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">14. </div><div
+class="csl-right-inline">Quellec G, Cazuguel G, Cochener B, Lamard M.
+<span class="nocase">Multiple-Instance Learning for Medical Image and
+Video Analysis</span>. <em>IEEE Reviews in Biomedical Engineering</em>.
+2017;10:213-234. doi:<a
+href="https://doi.org/10.1109/RBME.2017.2651164">10.1109/RBME.2017.2651164</a></div>
+</div>
+<div id="ref-Ilse2018" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">15. </div><div
+class="csl-right-inline">Ilse M, Tomczak JM, Welling M. <span
+class="nocase">Attention-based Deep Multiple Instance Learning</span>.
+<em>arXiv preprint</em>. 2018;1802.04712. <a
+href="http://arxiv.org/abs/1802.04712">http://arxiv.org/abs/1802.04712</a></div>
+</div>
+<div id="ref-Couture2018" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">16. </div><div
+class="csl-right-inline">Couture HD, Marron JS, Perou CM, Troester MA,
+Niethammer M. <span class="nocase">Multiple Instance Learning for
+Heterogeneous Images: Training a CNN for Histopathology</span>. In:
+Frangi AF, Schnabel JA, Davatzikos C, Alberola-López C, Fichtinger G,
+eds. <em>Medical Image Computing and Computer Assisted Intervention –
+MICCAI 2018</em>. Springer International Publishing; 2018:254-262.</div>
+</div>
+<div id="ref-Ianni2020" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">17. </div><div
+class="csl-right-inline">Ianni JD, Soans RE, Sankarapandian S, et al.
+<span class="nocase">Tailored for Real-World: A Whole Slide Image
+Classification System Validated on Uncurated Multi-Site Data Emulating
+the Prospective Pathology Workload</span>. <em>Scientific Reports</em>.
+2020;10(1):3217. doi:<a
+href="https://doi.org/10.1038/s41598-020-59985-2">10.1038/s41598-020-59985-2</a></div>
+</div>
+<div id="ref-Hou2016" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">18. </div><div class="csl-right-inline">Hou
+L, Samaras D, Kurc TM, Gao Y, Davis JE, Saltz JH. <span
+class="nocase">Patch-Based Convolutional Neural Network for Whole Slide
+Tissue Image Classification</span>. In: <em>2016 IEEE Conference on
+Computer Vision and Pattern Recognition (CVPR)</em>.; 2016:2424-2433.
+doi:<a
+href="https://doi.org/10.1109/CVPR.2016.266">10.1109/CVPR.2016.266</a></div>
+</div>
+<div id="ref-Dong2018" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">19. </div><div
+class="csl-right-inline">Dong N, Kampffmeyer M, Liang X, Wang Z, Dai W,
+Xing EP. <span class="nocase">Reinforced Auto-Zoom Net: Towards Accurate
+and Fast Breast Cancer Segmentation in Whole-slide Images</span>.
+<em>CoRR</em>. 2018;abs/1807.1. <a
+href="http://arxiv.org/abs/1807.11113">http://arxiv.org/abs/1807.11113</a></div>
+</div>
+<div id="ref-Mnih2014" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">20. </div><div
+class="csl-right-inline">Mnih V, Heess N, Graves A, Kavukcuoglu K. <span
+class="nocase">Recurrent Models of Visual Attention</span>. In:
+<em>Proceedings of the 27th International Conference on Neural
+Information Processing Systems - Volume 2</em>. MIT Press;
+2014:2204-2212. <a
+href="http://dl.acm.org/citation.cfm?id=2969033.2969073">http://dl.acm.org/citation.cfm?id=2969033.2969073</a></div>
+</div>
+<div id="ref-Katharopoulos2019" class="csl-entry"
+role="doc-biblioentry">
+<div class="csl-left-margin">21. </div><div
+class="csl-right-inline">Katharopoulos A, Fleuret F. <span
+class="nocase">Processing Megapixel Images with Deep Attention-Sampling
+Models</span>. In: <em>Proceedings of the 36th International Conference
+on Machine Learning</em>.; 2019. <a
+href="http://arxiv.org/abs/1905.03711">http://arxiv.org/abs/1905.03711</a></div>
+</div>
+<div id="ref-Recasens2018" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">22. </div><div
+class="csl-right-inline">Recasens A, Kellnhofer P, Stent S, Matusik W,
+Torralba A. <span class="nocase">Learning to Zoom: a Saliency-Based
+Sampling Layer for Neural Networks</span>. In: <em>European Conference
+on Computer Vision</em>.; 2018. <a
+href="http://arxiv.org/abs/1809.03355">http://arxiv.org/abs/1809.03355</a></div>
+</div>
+<div id="ref-Tellez2019" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">23. </div><div
+class="csl-right-inline">Tellez D, Litjens G, Laak J van der, Ciompi F.
+<span class="nocase">Neural Image Compression for Gigapixel
+Histopathology Image Analysis</span>. <em>IEEE Transactions on Pattern
+Analysis and Machine Intelligence</em>. in press. doi:<a
+href="https://doi.org/10.1109/TPAMI.2019.2936841">10.1109/TPAMI.2019.2936841</a></div>
+</div>
+<div id="ref-Gomez2017" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">24. </div><div
+class="csl-right-inline">Gomez AN, Ren M, Urtasun R, Grosse RB.
+<span>The Reversible Residual Network: Backpropagation Without Storing
+Activations</span>. In: <em>Proceedings of the 31st International
+Conference on Neural Information Processing Systems</em>.;
+2017:2211-2221. <a
+href="http://arxiv.org/abs/1707.04585">http://arxiv.org/abs/1707.04585</a></div>
+</div>
+<div id="ref-Chollet2017" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">25. </div><div
+class="csl-right-inline">Chollet F. <span class="nocase">Xception: Deep
+Learning with Depthwise Separable Convolutions</span>. In: <em>2017 IEEE
+Conference on Computer Vision and Pattern Recognition (CVPR)</em>.;
+2017:1800-1807. doi:<a
+href="https://doi.org/10.1109/CVPR.2017.195">10.1109/CVPR.2017.195</a></div>
+</div>
+<div id="ref-Tan2019" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">26. </div><div class="csl-right-inline">Tan
+M, Le QV. <span class="nocase">EfficientNet: Rethinking Model Scaling
+for Convolutional Neural Networks</span>. In: <em>Proceedings of the
+36th International Conference on Machine Learning</em>.; 2019. <a
+href="http://arxiv.org/abs/1905.11946">http://arxiv.org/abs/1905.11946</a></div>
+</div>
+<div id="ref-Huang2017" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">27. </div><div
+class="csl-right-inline">Huang G, Liu Z, Van Der Maaten L, Weinberger
+KQ. <span class="nocase">Densely connected convolutional
+networks</span>. In: <em>Proceedings - 30th IEEE Conference on Computer
+Vision and Pattern Recognition</em>. Institute of Electrical;
+Electronics Engineers Inc.; 2017:2261-2269. doi:<a
+href="https://doi.org/10.1109/CVPR.2017.243">10.1109/CVPR.2017.243</a></div>
+</div>
+<div id="ref-Bulo2018" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">28. </div><div
+class="csl-right-inline">Bulo SR, Porzi L, Kontschieder P. <span
+class="nocase">In-place Activated BatchNorm for Memory-Optimized
+Training of DNNs</span>. In: <em>Proceedings of the IEEE Computer
+Society Conference on Computer Vision and Pattern Recognition</em>.;
+2018. doi:<a
+href="https://doi.org/10.1109/CVPR.2018.00591">10.1109/CVPR.2018.00591</a></div>
+</div>
+<div id="ref-Vanhoucke2011" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">29. </div><div
+class="csl-right-inline">Vanhoucke V, Senior A, Mao MZ. <span
+class="nocase">Improving the speed of neural networks on CPUs</span>.
+In: <em>Deep Learning and Unsupervised Feature Learning Workshop, NIPS
+2011</em>.; 2011.</div>
+</div>
+<div id="ref-Zhang2019" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">30. </div><div
+class="csl-right-inline">Zhang J, Yeung SH, Shu Y, He B, Wang W. <span
+class="nocase">Efficient Memory Management for GPU-based Deep Learning
+Systems</span>. Published online February 2019. <a
+href="http://arxiv.org/abs/1903.06631">http://arxiv.org/abs/1903.06631</a></div>
+</div>
+<div id="ref-Ioffe2015" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">31. </div><div
+class="csl-right-inline">Ioffe S, Szegedy C. <span class="nocase">Batch
+Normalization: Accelerating Deep Network Training by Reducing Internal
+Covariate Shift</span>. In: <em>Proceedings of the 32Nd International
+Conference on International Conference on Machine Learning - Volume
+37</em>. ICML’15. JMLR.org; 2015:448-456. <a
+href="http://dl.acm.org/citation.cfm?id=3045118.3045167">http://dl.acm.org/citation.cfm?id=3045118.3045167</a></div>
+</div>
+<div id="ref-Bandi2019" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">32. </div><div
+class="csl-right-inline">Bándi P, Geessink O, Manson Q, et al. <span
+class="nocase">From Detection of Individual Metastases to Classification
+of Lymph Node Status at the Patient Level: The CAMELYON17
+Challenge</span>. <em>IEEE Transactions on Medical Imaging</em>.
+2019;38(2):550-560. doi:<a
+href="https://doi.org/10.1109/TMI.2018.2867350">10.1109/TMI.2018.2867350</a></div>
+</div>
+<div id="ref-Szegedy2015" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">33. </div><div
+class="csl-right-inline">Szegedy C, Wei Liu, Yangqing Jia, et al. <span
+class="nocase">Going deeper with convolutions</span>. In: <em>2015 IEEE
+Conference on Computer Vision and Pattern Recognition (CVPR)</em>.;
+2015:1-9. doi:<a
+href="https://doi.org/10.1109/CVPR.2015.7298594">10.1109/CVPR.2015.7298594</a></div>
+</div>
+<div id="ref-He:2015:DDR:2919332.2919814" class="csl-entry"
+role="doc-biblioentry">
+<div class="csl-left-margin">34. </div><div class="csl-right-inline">He
+K, Zhang X, Ren S, Sun J. <span class="nocase">Delving Deep into
+Rectifiers: Surpassing Human-Level Performance on ImageNet
+Classification</span>. In: <em>Proceedings of the 2015 IEEE
+International Conference on Computer Vision (ICCV)</em>. IEEE Computer
+Society; 2015:1026-1034. doi:<a
+href="https://doi.org/10.1109/ICCV.2015.123">10.1109/ICCV.2015.123</a></div>
+</div>
+<div id="ref-Weinstein2013" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">35. </div><div
+class="csl-right-inline">Weinstein JN, Collisson EA, Mills GB, et al.
+<span class="nocase">The Cancer Genome Atlas Pan-Cancer analysis
+project</span>. <em>Nature Genetics</em>. 2013;45(10):1113-1120. doi:<a
+href="https://doi.org/10.1038/ng.2764">10.1038/ng.2764</a></div>
+</div>
+<div id="ref-Nielsen2010" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">36. </div><div
+class="csl-right-inline">Nielsen TO, Parker JS, Leung S, et al. <span
+class="nocase">A Comparison of PAM50 Intrinsic Subtyping with
+Immunohistochemistry and Clinical Prognostic Factors in
+Tamoxifen-Treated Estrogen Receptor–Positive Breast Cancer</span>.
+<em>Clinical Cancer Research</em>. 2010;16(21):5222-5232. doi:<a
+href="https://doi.org/10.1158/1078-0432.CCR-10-1282">10.1158/1078-0432.CCR-10-1282</a></div>
+</div>
+<div id="ref-DeVries2017" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">37. </div><div
+class="csl-right-inline">DeVries T, Taylor GW. <span
+class="nocase">Improved Regularization of Convolutional Neural Networks
+with Cutout</span>. <em>CoRR</em>. 2017;abs/1708.0. <a
+href="http://arxiv.org/abs/1708.04552">http://arxiv.org/abs/1708.04552</a></div>
+</div>
+<div id="ref-Kingma2015" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">38. </div><div
+class="csl-right-inline">Kingma DP, Ba J. <span class="nocase">Adam: A
+method for stochastic optimization</span>. In: <em>International
+Conference on Learning Representations (ICLR)</em>.; 2015.</div>
+</div>
+<div id="ref-Girshick:2015:FR:2919332.2920125" class="csl-entry"
+role="doc-biblioentry">
+<div class="csl-left-margin">39. </div><div
+class="csl-right-inline">Girshick R. <span>Fast R-CNN</span>. In:
+<em>Proceedings of the 2015 IEEE International Conference on Computer
+Vision (ICCV)</em>. ICCV ’15. IEEE Computer Society; 2015:1440-1448.
+doi:<a
+href="https://doi.org/10.1109/ICCV.2015.169">10.1109/ICCV.2015.169</a></div>
+</div>
+<div id="ref-Santurkar2018" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">40. </div><div
+class="csl-right-inline">Santurkar S, Tsipras D, Ilyas A, Madry A. <span
+class="nocase">How does batch normalization help optimization?</span>
+In: <em>Advances in Neural Information Processing Systems</em>. Vol
+2018-Decem.; 2018:2483-2493. <a
+href="https://papers.nips.cc/paper/7515-how-does-batch-normalization-help-optimization.pdf">https://papers.nips.cc/paper/7515-how-does-batch-normalization-help-optimization.pdf</a></div>
+</div>
+<div id="ref-Paeng2016" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">41. </div><div
+class="csl-right-inline">Paeng K, Hwang S, Park S, Kim M. <span
+class="nocase">A Unified Framework for Tumor Proliferation Score
+Prediction in Breast Histopathology</span>. <em>CoRR</em>.
+2016;abs/1612.0. <a
+href="http://arxiv.org/abs/1612.07180">http://arxiv.org/abs/1612.07180</a></div>
+</div>
+<div id="ref-Mishkin2015" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">42. </div><div
+class="csl-right-inline">Mishkin D, Matas J. <span class="nocase">All
+you need is a good init</span>. In: <em>International Conference on
+Learning Representations (ICLR)</em>.; 2016. <a
+href="http://arxiv.org/abs/1511.06422">http://arxiv.org/abs/1511.06422</a></div>
+</div>
+<div id="ref-Krahenbuhl2015" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">43. </div><div
+class="csl-right-inline">Krähenbühl P, Doersch C, Donahue J, Darrell T.
+<span class="nocase">Data-dependent Initializations of Convolutional
+Neural Networks</span>. In: <em>International Conference on Learning
+Representations (ICLR)</em>.; 2016. <a
+href="http://arxiv.org/abs/1511.06856">http://arxiv.org/abs/1511.06856</a></div>
+</div>
+<div id="ref-Simonyan2013" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">44. </div><div
+class="csl-right-inline">Simonyan K, Vedaldi A, Zisserman A. <span
+class="nocase">Deep Inside Convolutional Networks: Visualising Image
+Classification Models and Saliency Maps</span>. <em>CoRR</em>. Published
+online December 2013. <a
+href="http://arxiv.org/abs/1312.6034">http://arxiv.org/abs/1312.6034</a></div>
+</div>
+<div id="ref-Smilkov2017" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">45. </div><div
+class="csl-right-inline">Smilkov D, Thorat N, Kim B, Viégas FB,
+Wattenberg M. <span class="nocase">SmoothGrad: removing noise by adding
+noise</span>. In: <em>ICML Workshop on Visualization for Deep
+Learning</em>.; 2017. <a
+href="http://arxiv.org/abs/1706.03825">http://arxiv.org/abs/1706.03825</a></div>
+</div>
+<div id="ref-Salimans2016" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">46. </div><div
+class="csl-right-inline">Salimans T, Kingma DP. <span
+class="nocase">Weight normalization: A simple reparameterization to
+accelerate training of deep neural networks</span>. In: <em>Advances in
+Neural Information Processing Systems</em>.; 2016.</div>
+</div>
+<div id="ref-ronneberger2015u" class="csl-entry" role="doc-biblioentry">
+<div class="csl-left-margin">47. </div><div
+class="csl-right-inline">Ronneberger O, Fischer P, Brox T. <span
+class="nocase">U-net: Convolutional networks for biomedical image
+segmentation</span>. In: <em>International Conference on Medical Image
+Computing and Computer-Assisted Intervention</em>. Springer;
+2015:234-241.</div>
+</div>
+</div>
+<section id="footnotes" class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>By convention we used the term <em>convolution</em>
+although the mathematical operation implemented in most machine learning
+frameworks (e.g., TensorFlow, PyTorch) is a cross-correlation.<a
+href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Zero-padding the tiles before the convolution does not
+help because these zeros do not exist in the original vector, hereby
+invalidating the gradients at the border as well.<a href="#fnref2"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+</body>
+</html>

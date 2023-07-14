@@ -194,7 +194,6 @@ one-dimensional real-valued vector with $N$ elements. In discrete
 one-dimensional space, a "valid" convolution[^1] (\*) with a kernel with
 $n$ weights $w \in \mathbb{R}^n$, and stride 1, is defined as:
 
-::: algorithm
 $$\label{eq:1}
 (x * w)_k = \sum_{i=0}^{n} w_{i}x_{k+i}$$
 
@@ -241,11 +240,11 @@ the network.
 From this point onward, the term *streaming* refers to the tiling of a
 vector, applying kernel operations, and concatenating the results.
 
-<pre>
+::: algorithm
 $o\gets[]$ $stream\_o\gets$ `concat`$(o[0..m])$ $pred\gets$
 `forward`$(layers[i..n], stream\_o)$ $loss\gets$ `criterion`$(pred)$
 $g\gets$ `backward`$(layers[n..i], loss)$ $filled\gets[]$
-</pre>
+:::
 
 ## Streaming during backpropagation {#backwardpass}
 
@@ -276,17 +275,13 @@ $$\label{eq:6}
 \Delta w_j = \sum_{i=0}^{\lvert a \rvert-1} \Delta a_i x_{i+j} + \sum_{i=0}^{\lvert b \rvert-1} \Delta b_i x_{i+j+f//2}$$
 
 The gradient of the input can be calculated with a similar sum, but then
-shifted by the kernel size: 
-
-$$%
+shifted by the kernel size: $$% \label{eq:7}
 \Delta x_i = \sum_{j=0}^{n-1} 
 \begin{cases}
   w_j\Delta p_{i-j}, & \text{if}\ i-j \geq 0 \text{ and } i - j < \lvert p \rvert  \\
   0, & \text{otherwise}
 \end{cases}
-$$
-
-{#eq:7}
+% w_j\Delta p_{i-n+j}$$
 
 This formula is equal to a convolution with a flipped kernel $w$ on
 $\Delta p$ padded with $n - 1$ zeros (e.g.,
@@ -383,7 +378,7 @@ dataset[@Bandi2019].
 
 An open-source implementation of the streaming algorithm and the
 ImageNette experiments can be found at
-[](https://github.com/DIAGNijmegen/StreamingCNN).
+<https://github.com/DIAGNijmegen/StreamingCNN>.
 
 # Experiments on ImageNette {#section:imagenette}
 
@@ -393,6 +388,7 @@ ImageNet dataset, ImageNette, using 10 ImageNet classes (tench, English
 springer, cassette player, chain saw, church, French horn, garbage
 truck, gas pump, golf ball, parachute), analog to [@Howard2019].
 
+::: {#tab:imagenetnet}
   **Layers**        **Kernel size**   **Channels**
   ----------------- ----------------- --------------
   2D convolution    3x3               16
@@ -408,6 +404,7 @@ truck, gas pump, golf ball, parachute), analog to [@Howard2019].
   Fully connected   10                
 
   : Network architecture for Imagenette experiment
+:::
 
 ## Data preparation
 
