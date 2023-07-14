@@ -6,7 +6,7 @@
 
 # Chapters
 
-[Chapter 2](https://hanspinckaers.github.io/thesis/html/chapter2.html)https://hanspinckaers.github.io/thesis/html/chapter2.html)
+[Chapter 2](https://hanspinckaers.github.io/thesis/html/chapter2.html)
 
 # Typeface
 
