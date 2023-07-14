@@ -9,6 +9,7 @@
 * [Chapter 1](https://hanspinckaers.github.io/thesis/chapter1.html)
 * [Chapter 2](https://hanspinckaers.github.io/thesis/chapter2.html)
 * [Chapter 3](https://hanspinckaers.github.io/thesis/chapter3.html)
+* [Chapter 4](https://hanspinckaers.github.io/thesis/chapter4.html)
 
 # Typeface
 
