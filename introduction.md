@@ -1,5 +1,3 @@
-# Introduction
-
 This thesis will focus on the most common form of prostate cancer, prostatic
 adenocarcinoma. For simplicity, we will refer to this type as just 'prostate
 cancer.' Prostatic cancer is a disease of the epithelial cells of the prostate.
