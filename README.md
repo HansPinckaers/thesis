@@ -6,8 +6,8 @@
 
 # Chapters
 
-* [Chapter 1](https://hanspinckaers.github.io/thesis/html/chapter1.html)
-* [Chapter 2](https://hanspinckaers.github.io/thesis/html/chapter2.html)
+* [Chapter 1](https://hanspinckaers.github.io/thesis/chapter1.html)
+* [Chapter 2](https://hanspinckaers.github.io/thesis/chapter2.html)
 
 # Typeface
 
