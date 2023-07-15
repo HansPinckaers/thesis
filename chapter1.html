@@ -168,13 +168,15 @@ vertical-align: middle;
 </header>
 <p>This thesis will focus on the most common form of prostate cancer,
 prostatic adenocarcinoma. For simplicity, we will refer to this type as
-just ‘prostate cancer.’ Prostatic cancer is a disease of the epithelial
-cells of the prostate. Epithelial cells line our body cavities, our
-hollow organs, and glands. They undergo rapid proliferation, primarily
-due to damage. This proliferation increases the risk of genetic
-mutations, ultimately increasing the risk of a cell uncontrollably
-dividing. Together with enabling factors of its tissue environment, this
-can give rise to cancer.</p>
+just ‘prostate cancer.’ This disease affects one in .. men every year,
+making it the most prevalent common type of cancer in men (excluding
+skin cancers). Prostate cancer is a disease of the epithelial cells of
+the prostate. Epithelial cells line our body cavities, our hollow
+organs, and glands. They undergo rapid proliferation, primarily due to
+damage. This proliferation increases the risk of genetic mutations,
+ultimately increasing the risk of a cell uncontrollably dividing.
+Together with enabling factors of its tissue environment, this can give
+rise to cancer.</p>
 <h1 id="the-gleason-grading-system">The Gleason grading system</h1>
 <p>In general, the more aggressive cancerous cells are, the less they
 will behave and morphologically appear like their original function. The
@@ -200,18 +202,63 @@ tests, such as histopathological, radiological assessment, and lab
 assessments. The more precise these assessments are, the better we can
 tailor the treatment to the specific patient, this is known as
 personalized medicine.<span class="citation" data-cites="cite">[@cite]</span></p>
-<h3 id="genomic-biomarkers-mutations-prostatedx-etc">Genomic biomarkers
-(mutations &amp; prostateDx etc)</h3>
-<h3 id="trying-to-leverage-machine-learning-to-make-radiologypathology-reports-more-precise">trying
-to leverage machine learning to make radiology/pathology reports more
-precise</h3>
-<h1 id="introduce-deep-learning">Introduce Deep Learning</h1>
-<h3 id="examples-of-pathology-research-wouters-gleason-papers-etc">examples
-of pathology research (Wouter’s gleason papers etc)</h3>
-<h1 id="introduce-the-dimensionality-problem-of-computation-pathology">Introduce
-the dimensionality problem of computation pathology</h1>
-<h3 id="introduce-weakly-supervised-methods">Introduce weakly supervised
-methods</h3>
-<h3 id="conclude-that-they-are-shit.">Conclude that they are shit.</h3>
+<h2 id="genomic-biomarkers-mutations-prostatedx-etc">Genomic biomarkers
+(mutations &amp; prostateDx etc)</h2>
+<ul>
+<li>trying to leverage machine learning to make radiology/pathology
+reports more precise</li>
+</ul>
+<h2 id="visual-biomarkers">“Visual” biomarkers</h2>
+<h1 id="convolutional-neural-networks">Convolutional neural
+networks</h1>
+<p>Convolutional neural networks (CNNs) have emerged among the
+state-of-the-art machine learning algorithms for various computer vision
+tasks, such as image classification and segmentation.</p>
+<p>The central component of a convolutional neural network is often
+represented as a sliding kernel (or filter) over an input matrix,
+producing an output matrix. This has several advantages; we can use a
+smaller kernel than the whole making the network less complex while
+exploiting the fact that objects in the image are translation invariant.
+A cat in the upper-left corner is still a cat in the lower right corner.
+We introduce this inductive bias to the network by using
+convolutions.</p>
+<p>Most convolutional neural network architectures have alternating
+blocks of layers consisting of a convolutional operation, a non-linear
+activation function, and often a normalization operation. The
+non-linearities are essential, as they make the networks able to
+represent more complex (non-linear) functions. Normalization layers
+bound the output of the block to be within a specific range which helps
+during the optimization of the network.</p>
+<p>Even though sliding kernels are less complex than having one
+parameter per input value, the network architectures have evolved to
+become deeper and wider to enhance their accuracy further. Training
+larger CNNs demands larger amounts of computer memory, which increases
+exponentially with the size of input images. Consequently, most natural
+image datasets in computer vision, such as ImageNet and CIFAR-10,
+contain sub-megapixel images to circumvent memory limitations.</p>
+<p>In specific domains like remote sensing and medical imaging, there is
+a need to train CNNs on high-resolution, where most of the information
+is contained. Ideally we want to combine the high-resolution information
+with more global context, as pathologists can do during daily practive.
+However, computer memory becomes a limiting factor. The memory
+requirements of CNNs increase proportionally to the input size of the
+network, quickly filling up memory with multi-megapixel images. As a
+result, only small CNNs can be trained with such images, rendering
+state-of-the-art architectures unattainable even on large computing
+clusters.</p>
+<h1 id="introduce-computation-pathology">Introduce Computation
+Pathology</h1>
+<ul>
+<li>examples of pathology research (Wouter’s gleason papers etc)</li>
+</ul>
+<p>Some computational pathology tasks can be achieved with patch-based
+methods.</p>
+<h1 id="weakly-supervised-methods">Weakly supervised methods</h1>
+<p>For others, several authors have suggested approaches to train
+convolutional neural networks (CNNs) with large input images while
+preventing memory bottlenecks. Their methods can be roughly grouped into
+three categories: (A) altering the dataset, (B) altering usage of the
+dataset, and (C) altering the network or underlying implementations.</p>
+<p>Chapter 2 will go more into depth on this.</p>
 </body>
 </html>

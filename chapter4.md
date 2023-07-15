@@ -2,8 +2,7 @@
 author:
 - Hans Pinckaers^a^\*, Jolique van Ipenburg^a^, Jonathan Melamed^b^, Angelo De Marzo^c^, Elizabeth A. Platz^d^, Bram van Ginneken^a^, Jeroen van der Laak^a,e^, Geert Litjens^a^
 bibliography: library.bib
-title: Streaming convolutional neural networks for end-to-end learning
-  with multi-megapixel images
+title: Predicting biochemical recurrence of prostate cancer with artificial intelligence
 abstract: |
   **Background\:** The first sign of metastatic prostate cancer after
   radical prostatectomy is rising PSA levels in the blood, termed
