@@ -9,8 +9,6 @@ of genetic mutations, ultimately increasing the risk of a cell uncontrollably
 dividing. Together with enabling factors of its tissue environment, this can
 give rise to cancer.
 
-# The Gleason grading system
-
 In general, the more aggressive cancerous cells are, the less they will behave
 and morphologically appear like their original function. The prostate is a
 gland that produces prostatic fluid. The fluid is transported to the urethra by
@@ -21,26 +19,73 @@ quasi-randomly dispersed individual cancerous cells.
 
 American pathologist Donald Floyd Gleason systematically wrote down the
 correlation between growth patterns and prognosis in prostate cancer in the
-1960s[@cite]. Pathologists still use this Gleason grading, albeit several
-revisions later[@cite], to classify prostate cancer.
+1960s[@cite_original]. Pathologists still use this Gleason grading, albeit several
+revisions later[@Epstein2016-im], to classify prostate cancer.
 
 [Insert image Gleason grown patterns]
 
 # Prognostic biomarkers
 
-The Gleason grading system can be considered a biomarker as it indicates the
-prognosis of a patient with prostate cancer[@chen2011]. Traditionally
-clinicians use nomograms to decide treatment protocols, which combine the
-clinical characteristics of the patients with other diagnostic tests, such as
-histopathological, radiological assessment, and lab assessments. The more
-precise these assessments are, the better we can tailor the treatment to the
-specific patient, this is known as personalized medicine.[@cite] 
+To decide on a treatment plan, clinicians divide patients into risk groups
+according to traditional baseline characteristics, such as PSA blood level,
+Gleason grade, tumor location, tumor size, and lymph node
+status.[lam2019] This information is gathered from histopathological,
+radiological assessment, and lab assessments. These assessments can be
+considered biomarkers as they indicate the prognosis of a patient[@chen2011].
+The more precise these assessments are, the better we can tailor the treatment
+to the specific patient; this is known as personalized medicine.[@citation_needed] 
 
-## Genomic biomarkers (mutations & prostateDx etc)
+To make treatment more tailored to the patient, researchers try to develop new
+biomarkers. There is a demand for new biomarkers because most prostate cancers
+progress so slowly that they are unlikely to threaten the affected individual's
+survival. However, treatments for prostate cancer obviously have adverse
+effects (#tab:adverse){reference-type="ref" reference="tab:adverse"}). To
+prevent adverse effects and increase treatment response, researchers are
+developing new markers in genomics, radiology, and pathology, the latter of
+which is the subject of this thesis.
 
-- trying to leverage machine learning to make radiology/pathology reports more precise
+::: {#tab:adverse}
+  ------------------------ ------------------------------- ----------------------------------------------------------------------------------------------------
+  **Treatment Option**     **Disease Progression**         **Potential Adverse Effects**
+  Active surveillance      Localized                       Illness uncertainty
+  Radical prostatectomy    Localized                       Erectile dysfunction
+                                                           Urinary incontinence
+  External beam radiation  Localized and advanced disease  Urinary urgency and frequency, dysuria, diarrhea and proctitis
+                                                           Erectile dysfunction
+                                                           Urinary incontinence
+  Brachytherapy            Localized                       Urinary urgency and frequency, dysuria, diarrhea and proctitis
+                                                           Erectile dysfunction
+                                                           Urinary incontinence
+  Cryotherapy              Localized                       Erectile dysfunction
+                                                           Urinary incontinence and retention
+                                                           Rectal pain and fistula
+  Hormone therapy          Advanced                        Fatigue
+                                                           Hot flashes, and flare effect
+                                                           Hyperlipidemia
+                                                           Insulin resistance
+                                                           Cardiovascular disease
+                                                           Anemia
+                                                           Osteoporosis
+                                                           Erectile dysfunction
+                                                           Cognitive deficits
+  Chemotherapy             Advanced                        Myelosuppression
+                                                           Hypersensitivity reaction
+                                                           Gastrointestinal upset
+                                                           Peripheral neuropathy
+  ------------------------ ------------------------------- ----------------------------------------------------------------------------------------------------
 
-## "Visual" biomarkers
+  : Common Prostate Cancer Treatment Options and Potential Adverse Effects, reproduced from Dunn et al.[@dunn2011]
+:::
+
+## Recent genomic biomarkers (mutations & prostateDx etc)
+
+Besides these standard clinical assessments, there are increasingly genetic
+markers used. Genomic alterations, such as mutations, amplifications,
+deletions, and fusions can be indicative of prognosis or treatment response. 
+
+## Recent radiology-based biomarkers
+
+## Recent pathology-based biomarkers
 
 # Convolutional neural networks
 
@@ -81,11 +126,7 @@ multi-megapixel images. As a result, only small CNNs can be trained with such
 images, rendering state-of-the-art architectures unattainable even on large
 computing clusters.
 
-# Introduce Computation Pathology 
-
-- examples of pathology research (Wouter's gleason papers etc)
-
-Some computational pathology tasks can be achieved with patch-based methods. 
+## Computation Pathology 
 
 # Weakly supervised methods 
 
@@ -95,5 +136,5 @@ bottlenecks. Their methods can be roughly grouped into three categories: (A)
 altering the dataset, (B) altering usage of the dataset, and (C) altering the
 network or underlying implementations.
 
-Chapter 2 will go more into depth on this.
+#  Thesis overview
 

@@ -191,6 +191,70 @@
 learning with multi-megapixel images</h1>
 <p class="author">Hans Pinckaers, Bram van Ginneken, Geert Litjens</p>
 </header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#related-work" id="toc-related-work">Related work</a>
+<ul>
+<li><a href="#altering-the-dataset"
+id="toc-altering-the-dataset">Altering the dataset</a></li>
+<li><a href="#altering-usage-of-the-dataset"
+id="toc-altering-usage-of-the-dataset">Altering usage of the
+dataset</a></li>
+<li><a href="#altering-the-network-or-underlying-implementations"
+id="toc-altering-the-network-or-underlying-implementations">Altering the
+network or underlying implementations</a></li>
+</ul></li>
+<li><a href="#methods" id="toc-methods">Methods</a>
+<ul>
+<li><a href="#forwardpass" id="toc-forwardpass">Streaming during the
+forward pass</a></li>
+<li><a href="#backwardpass" id="toc-backwardpass">Streaming during
+backpropagation</a></li>
+<li><a href="#calculateoverlap" id="toc-calculateoverlap">Efficiently
+calculating required tile overlap for complex architectures</a></li>
+<li><a href="#limitations" id="toc-limitations">Limitations</a></li>
+</ul></li>
+<li><a href="#evaluation" id="toc-evaluation">Evaluation</a></li>
+<li><a href="#section:imagenette"
+id="toc-section:imagenette">Experiments on ImageNette</a>
+<ul>
+<li><a href="#data-preparation" id="toc-data-preparation">Data
+preparation</a></li>
+<li><a href="#network-architecture-and-training-scheme"
+id="toc-network-architecture-and-training-scheme">Network architecture
+and training scheme</a></li>
+<li><a href="#results-on-imagenette"
+id="toc-results-on-imagenette">Results on Imagenette</a></li>
+</ul></li>
+<li><a href="#section:tupac" id="toc-section:tupac">Experiments on
+TUPAC16 dataset</a>
+<ul>
+<li><a href="#data-preparation-1" id="toc-data-preparation-1">Data
+preparation</a></li>
+<li><a href="#network-architecture-and-training-scheme-1"
+id="toc-network-architecture-and-training-scheme-1">Network architecture
+and training scheme</a></li>
+<li><a href="#results-on-tupac16" id="toc-results-on-tupac16">Results on
+TUPAC16</a></li>
+</ul></li>
+<li><a href="#section:camyleon" id="toc-section:camyleon">Experiments on
+CAMELYON17 dataset</a>
+<ul>
+<li><a href="#network-architecture-and-training-scheme-2"
+id="toc-network-architecture-and-training-scheme-2">Network architecture
+and training scheme</a></li>
+<li><a href="#results-on-camelyon17"
+id="toc-results-on-camelyon17">Results on CAMELYON17</a></li>
+<li><a href="#saliency-maps" id="toc-saliency-maps">Saliency
+maps</a></li>
+</ul></li>
+<li><a href="#discussion-and-conclusion"
+id="toc-discussion-and-conclusion">Discussion and conclusion</a></li>
+<li><a href="#acknowledgements"
+id="toc-acknowledgements">Acknowledgements</a></li>
+</ul>
+</nav>
 <h1 id="introduction">Introduction</h1>
 <p>Convolutional neural networks (CNN) are the current state-of-the-art
 machine learning algorithms for many computer vision tasks, such as
