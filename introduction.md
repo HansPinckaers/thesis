@@ -12,15 +12,15 @@ give rise to cancer.
 In general, the more aggressive cancerous cells are, the less they will behave
 and morphologically appear like their original function. The prostate is a
 gland that produces prostatic fluid. The fluid is transported to the urethra by
-small tubes. These tubes, called prostatic glands, are lined with epithelium.
+small 0ubes. These tubes, called prostatic glands, are lined with epithelium.
 Low-grade cancer will thus mimic those gland structures. High-grade prostate
 cancer loses its structural morphology, forming sheets of cells or even
 quasi-randomly dispersed individual cancerous cells.
 
 American pathologist Donald Floyd Gleason systematically wrote down the
 correlation between growth patterns and prognosis in prostate cancer in the
-1960s[@cite_original]. Pathologists still use this Gleason grading, albeit several
-revisions later[@Epstein2016-im], to classify prostate cancer.
+1960s[@cite_original]. Pathologists still use this Gleason grading, albeit
+several revisions later[@Epstein2016-im], to classify prostate cancer.
 
 [Insert image Gleason grown patterns]
 
@@ -33,16 +33,20 @@ status.[lam2019] This information is gathered from histopathological,
 radiological assessment, and lab assessments. These assessments can be
 considered biomarkers as they indicate the prognosis of a patient[@chen2011].
 The more precise these assessments are, the better we can tailor the treatment
-to the specific patient; this is known as personalized medicine.[@citation_needed] 
+to the specific patient; this is known as personalized medicine.
 
 To make treatment more tailored to the patient, researchers try to develop new
 biomarkers. There is a demand for new biomarkers because most prostate cancers
 progress so slowly that they are unlikely to threaten the affected individual's
-survival. However, treatments for prostate cancer obviously have adverse
-effects (#tab:adverse){reference-type="ref" reference="tab:adverse"}). To
-prevent adverse effects and increase treatment response, researchers are
-developing new markers in genomics, radiology, and pathology, the latter of
-which is the subject of this thesis.
+survival, and patients with the same histological and clinical characteristics,
+can have strikingly different outcomes [@cucchiara2018]. Being able to pick out
+patients with good prognostis would improve their quality of life since
+treatments for prostate cancer obviously have adverse effects
+(#tab:adverse){reference-type="ref" reference="tab:adverse"}). Equally so for
+patients for which we can find out the treatment will not contribute to their
+health. To prevent adverse effects and increase treatment response, researchers
+are developing new markers in genomics[@cucchiara2018], radiology[@roest2023],
+and pathology, the latter of which is the subject of this thesis.
 
 ::: {#tab:adverse}
   ------------------------ ------------------------------- ----------------------------------------------------------------------------------------------------
@@ -77,76 +81,56 @@ which is the subject of this thesis.
   : Common Prostate Cancer Treatment Options and Potential Adverse Effects, reproduced from Dunn et al.[@dunn2011]
 :::
 
-## Recent genomic biomarkers (mutations & prostateDx etc)
+## Biomarkers based on histopathology
 
-Besides these standard clinical assessments, there are increasingly genetic
-markers used. Genomic alterations, such as mutations, amplifications,
-deletions, and fusions can be indicative of prognosis or treatment response. 
+We know that histopathology holds prognostic information. Commonly, pathologist
+also report extra-capsular extension of the tumor and perineural invasion, both
+signs of poor prognosis. As mentioned earlier, the Gleason patterns were
+discovered by recording patient prognosis. Gleason growth patterns are grouped
+into five different groups, of which current pathologists mainly use the last
+three. It's not hard to imagine there being more clues in the morphology of the
+behavior of the tumor, if only because the landscape of prostate cancer growth
+patterns is certainly more complex than the three groups we divide them in. Of
+note, recently, the 'subpattern' cribriform-like growth was discovered to be an
+aggressive pattern. 
 
-## Recent radiology-based biomarkers
+However, these visual biomarkers are hard to explicitly specify and quantify
+manually. Luckily, machine learning can help. The first chapter will discuss
+this approach further. However, it makes sense to introduce this research
+field, computational pathology, first.
 
-## Recent pathology-based biomarkers
+## Computation Pathology 
 
-```
-Genomic biomarkers 
-Besides traditional pathology, molecular biomarkers are
-gaining traction in precision medicine. Genomic alterations, such as mutations,
-amplifications, deletions, and fusions can be indicative of diagnosis or
-prognosis. For example, molecular tests like Oncotype DX for breast cancer or
-ProstateDX for prostate cancer are used in clinical practice.
+Pathology is undergoing a digital revolution. More and more labs are purchasing
+whole-slide scanners, with some already reading most slides digitally. Glass
+slides are digitized, resulting in gigapixel digital images, commonly referred
+to as whole-slide images (WSIs). Once the data is digital, opportunities for
+computational analysis and assistance arise. 
 
-For prostate cancer, the Prolaris test by Myriad Genetics looks at the
-expression of cell cycle progression genes. The Decipher test by GenomeDX
-Biosciences investigates the whole transcriptome. Both tests aim to predict
-prognosis after prostatectomy or radiotherapy.
+Litjens et al. [1] gave an overview of deep learning applications in
+computational pathology up to 2016. Some early successes in the field focused
+on segmentation, tissue classification, and disease classification. Not on
+prognosis or treatment response prediction treatment. Likely due to the fact
+these tasks are relatively easier and since this kind of data is relatively
+cheap to obtain compared to prognosis information
 
-However, the costs of these tests can be prohibitive for wide adoption.
-Research aims to find cheaper solutions by investigating whether computational
-analysis of traditional pathology slides could uncover similar information. For
-example, Coudray et al. [1] showed that CNNs can find EGFR mutations in lung
-cancer slides.
+<!--
+More recent work focuses on clinical implementation and validation. Campanella
+et al. [2] propose a system for prostate cancer detection trained with weak
+slide-level labels. Bulten et al. [3] validate a system to determine the
+Gleason grade of prostate cancer biopsies, showing human-level performance.   
 
-Overall, molecular information provides opportunities for precision medicine.
-Ideally, we can leverage computational approaches applied to traditional
-pathology to unlock this information in a cheap and accessible manner.
+Especially interesting for clinical implementation is the ability to learn with
+weaker labels, circumventing expensive precise annotations. Although labels
+directly from pathology reports are noisy, the information is good enough to
+guide treatment decisions. As such, recent focus, like in this thesis, is to
+train deep learning models directly using these readily available labels.
 
-## "Visual" biomarkers 
+Overall, deep learning shows potential to enhance and assist pathology using
+the digital pathology slides. The following chapters will dive deeper into the
+specific computational pathology tasks tackled in this thesis.
+-->
 
-Besides molecular biomarkers, morphology and tissue
-architecture can also hold prognostic information. As pathologists gain
-experience, they unconsciously pick up these visual patterns and take them into
-account during diagnosis.
-
-However, these visual biomarkers are hard to quantify and explicitly specify,
-especially compared to molecular biomarkers. Still, they have great potential
-for computational pathology algorithms. Deep learning has shown promise in
-finding these patterns directly from histopathology images in an end-to-end
-manner.
-
-For example, Wulczyn et al. [2] predict survival in colorectal cancer using
-tissue slides and patient data. Coudray et al. [1] find histological patterns
-predictive of EGFR and KRAS mutation status in lung cancer. Pinckaers et al.
-[3] show that CNNs can find prognostic morphologic patterns in prostate cancer.
-
-In summary, besides known molecular biomarkers, subtle visual patterns likely
-hold additional prognostic information. Advanced machine learning techniques
-may help unlock the prognostic potential of traditional pathology slides.
-
-<!-- References: -->
-
-<!-- [1] Coudray, N., Ocampo, P.S. & Sakellaropoulos, T. et al. Classification and -->
-<!-- mutation prediction from non-small cell lung cancer histopathology images using -->
-<!-- deep learning. Nat Med 24, 1559–1567 (2018). -->
-<!-- https://doi.org/10.1038/s41591-018-0177-5 -->
-
-<!-- [2] Wulczyn, E., Steiner, D.F., Moran, M. et al. Interpretable survival -->
-<!-- prediction for colorectal cancer using deep learning. npj Digit. Med. 4, 71 -->
-<!-- (2021). https://doi.org/10.1038/s41746-021-00431-3 -->
-
-<!-- [3] Pinckaers, H., van Ipenburg, J., Melamed, J. et al. Predicting biochemical -->
-<!-- recurrence of prostate cancer with artificial intelligence. Nature Machine -->
-<!-- Intelligence (2022). https://doi.org/10.1038/s42256-021-00454-0 -->
-```
 # Convolutional neural networks
 
 Convolutional neural networks (CNNs) have emerged among the state-of-the-art
@@ -185,52 +169,6 @@ proportionally to the input size of the network, quickly filling up memory with
 multi-megapixel images. As a result, only small CNNs can be trained with such
 images, rendering state-of-the-art architectures unattainable even on large
 computing clusters.
-
-## Computation Pathology 
-
-```
-Pathology is undergoing a digital revolution. With whole slide scanners, glass
-slides can be digitized resulting in gigapixel digital images, commonly
-referred to as whole slide images (WSIs). This enables new opportunities for
-computational analysis and assistance. The field leveraging computational
-techniques on digital pathology images is referred to as computational
-pathology.
-
-Some early successes in the field focused on segmentation and tissue
-classification. For example, training neural networks to find tumor areas or
-specific tissue structures. However, ultimately the goal is not a precise
-segmentation or localization, but to mimic and enhance the diagnostic
-capabilities of pathologists. 
-
-Researchers have shown the potential of using deep learning on histopathology
-for diagnosis and prognosis. For example, Litjens et al. [1] gave an overview
-of deep learning applications in computational pathology up to 2016. They
-highlight areas as mitosis counting, tissue classification, detection of lymph
-node metastases, and prognosis prediction. 
-
-More recent work focuses on clinical implementation and validation. Campanella
-et al. [2] propose a system for prostate cancer detection trained with weak
-slide-level labels. Bulten et al. [3] validate a system to determine the
-Gleason grade of prostate cancer biopsies, showing human-level performance.   
-
-Especially interesting for clinical implementation is the ability to learn with
-weaker labels, circumventing expensive precise annotations. Although labels
-directly from pathology reports are noisy, the information is good enough to
-guide treatment decisions. As such, recent focus, like in this thesis, is to
-train deep learning models directly using these readily available labels.
-
-Overall, deep learning shows potential to enhance and assist pathology using
-the digital pathology slides. The following chapters will dive deeper into the
-specific computational pathology tasks tackled in this thesis.
-```
-<!-- References: -->
-
-<!-- [1] Litjens G, Kooi T, Bejnordi BE, et al. A survey on deep learning in medical image analysis. Med Image Anal. 2017;42:60-88. doi:10.1016/j.media.2017.07.005 --> 
-
-<!-- [2] Campanella G, Hanna MG, Geneslaw L, et al. Clinical-grade computational pathology using weakly supervised deep learning on whole slide images. Nat Med. 2019;25(8):1301-1309. doi:10.1038/s41591-019-0508-1 -->
-
-<!-- [3] Bulten W, Pinckaers H, van Boven H, et al. Automated deep-learning system for Gleason grading of prostate cancer using biopsies: a diagnostic study. Lancet Oncol. 2020;21(2):233-241. doi:10.1016/S1470-2045(19)30739-9 -->
-
 
 # Weakly supervised methods 
 
@@ -281,10 +219,9 @@ labels. Chapter 2 will go more into depth on this.
 ```
 Chapter 2 proposes a method called "streaming" to train convolutional neural
 networks end-to-end on multi-megapixel histopathology images, circumventing
-memory limitations. It tiles the input image and reconstructs activations,
+memory limitations. We tiles the input image and reconstructs activations,
 allowing the use of entire high-resolution images during training without
-cropping. Experiments show streaming enables the use of larger images,
-improving performance on public datasets.
+cropping. 
 
 Chapter 3 applies streaming to train models on whole prostate biopsy images
 using only slide-level labels from pathology reports. It shows a modern CNN can
