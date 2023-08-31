@@ -54,7 +54,7 @@ and pathology, the latter of which is the subject of this thesis.
 
 \pagebreak
 ::: {#tab:adverse}
-  ------------------------ ------------------------------- --------------------------------------
+  ------------------------ ------------------------------- ----------------------------------------------------------------------------------------------------
   **Treatment Option**     **Disease Progression**         **Potential Adverse Effects**
   Active surveillance      Localized                       Illness uncertainty
   Radical prostatectomy    Localized                       Erectile dysfunction
@@ -83,10 +83,11 @@ and pathology, the latter of which is the subject of this thesis.
                                                            Hypersensitivity reaction
                                                            Gastrointestinal upset
                                                            Peripheral neuropathy
-  ------------------------ ------------------------------- --------------------------------------
+  ------------------------ ------------------------------- ----------------------------------------------------------------------------------------------------
 
-  : Common Prostate Cancer Treatment Options and Potential Adverse Effects,
-  reproduced from Dunn et al.[@dunn2011] ::: \pagebreak
+  : Common Prostate Cancer Treatment Options and Potential Adverse Effects, reproduced from Dunn et al.[@dunn2011]
+:::
+\pagebreak
 
 ## Biomarkers based on histopathology
 
