@@ -5,11 +5,9 @@
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Hans Pinckaersa*, Jolique van Ipenburga, Jonathan Melamedb, Angelo De Marzoc, Elizabeth A. Platzd, Bram van Ginnekena, Jeroen van der Laaka,e, Geert Litjensa" />
-  <title>Predicting biochemical recurrence of prostate cancer with artificial intelligence</title>
+  <title>Introduction</title>
   <style>
     html {
-      line-height: 1.5;
-      font-family: Georgia, serif;
       font-size: 12pt;
       color: #1a1a1a;
       background-color: #fdfdfd;
@@ -29,13 +27,16 @@
     @media (max-width: 600px) {
       body {
         font-size: 0.9em;
-        padding: 1em;
+        padding: 12px;
       }
       h1 {
         font-size: 1.8em;
       }
     }
     @media print {
+      html {
+        background-color: white;
+      }
       body {
         background-color: transparent;
         color: black;
@@ -96,9 +97,10 @@
       margin-bottom: 0.5em;
     }
     code {
-      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
       font-size: 85%;
       margin: 0;
+      hyphens: manual;
     }
     pre {
       margin: 1em 0;
@@ -163,17 +165,21 @@
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
     ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
       width: 0.8em;
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
+    /* CSS for citations */
     div.csl-bib-body { }
     div.csl-entry {
       clear: both;
     }
-    .hanging div.csl-entry {
+    .hanging-indent div.csl-entry {
       margin-left:2em;
       text-indent:-2em;
     }
@@ -187,16 +193,14 @@
     }
     div.csl-indent {
       margin-left: 2em;
-    }
-  </style>
+    }  </style>
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Predicting biochemical recurrence of prostate cancer
-with artificial intelligence</h1>
+<h1 class="title">Introduction</h1>
 <p class="author">Hans Pinckaers<sup>a</sup>*, Jolique van
 Ipenburg<sup>a</sup>, Jonathan Melamed<sup>b</sup>, Angelo De
 Marzo<sup>c</sup>, Elizabeth A. Platz<sup>d</sup>, Bram van
@@ -229,16 +233,6 @@ predictive power in the tissue beyond the morphological ISUP
 grading.</p>
 </div>
 </header>
-<nav id="TOC" role="doc-toc">
-<ul>
-<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
-<li><a href="#methods" id="toc-methods">Methods</a></li>
-<li><a href="#results" id="toc-results">Results</a></li>
-<li><a href="#section" id="toc-section"></a></li>
-<li><a href="#discussion" id="toc-discussion">Discussion</a></li>
-<li><a href="#conclusions" id="toc-conclusions">Conclusions</a></li>
-</ul>
-</nav>
 <p>Corresponding author: Hans Pinckaers, Radboud University Medical
 Center, Postbus 9101, 6500 HB Nijmegen, The Netherlands (tel +31 634 856
 950, hans.pinckaers@radboudumc.nl)</p>
@@ -1371,8 +1365,8 @@ DAMD17-03-1-0273, and supported by Prostate Cancer NCI-NIH grant (P50
 CA58236).</em></p>
 <p><strong>References</strong></p>
 <p><strong>Appendix can be found here:</strong></p>
-<div id="refs" class="references csl-bib-body" role="doc-bibliography">
-<div id="ref-Sung2021-iz" class="csl-entry" role="doc-biblioentry">
+<div id="refs" class="references csl-bib-body" role="list">
+<div id="ref-Sung2021-iz" class="csl-entry" role="listitem">
 <div class="csl-left-margin">1. </div><div class="csl-right-inline">Sung
 H, Ferlay J, Siegel RL, et al. Global cancer statistics 2020:
 <span>GLOBOCAN</span> estimates of incidence and mortality worldwide for
@@ -1380,21 +1374,20 @@ H, Ferlay J, Siegel RL, et al. Global cancer statistics 2020:
 February 2021.</div>
 </div>
 <div id="ref-US_Preventive_Services_Task_Force2018-ro" class="csl-entry"
-role="doc-biblioentry">
+role="listitem">
 <div class="csl-left-margin">2. </div><div class="csl-right-inline">US
 Preventive Services Task Force, Grossman DC, Curry SJ, et al. Screening
 for prostate cancer: <span>US</span> preventive services task force
 recommendation statement. <em>JAMA</em>. 2018;319(18):1901-1913.</div>
 </div>
-<div id="ref-Goonewardene2014-nu" class="csl-entry"
-role="doc-biblioentry">
+<div id="ref-Goonewardene2014-nu" class="csl-entry" role="listitem">
 <div class="csl-left-margin">3. </div><div
 class="csl-right-inline">Goonewardene SS, Phull JS, Bahl A, Persad RA.
 Interpretation of <span>PSA</span> levels after radical therapy for
 prostate cancer. <em>Trends Urol Men s Health</em>.
 2014;5(4):30-34.</div>
 </div>
-<div id="ref-Amling2000-ty" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Amling2000-ty" class="csl-entry" role="listitem">
 <div class="csl-left-margin">4. </div><div
 class="csl-right-inline">Amling CL, Blute ML, Bergstralh EJ, Seay TM,
 Slezak J, Zincke H. Long-term hazard of progression after radical
@@ -1402,29 +1395,28 @@ prostatectomy for clinically localized prostate cancer: Continued risk
 of biochemical failure after 5 years. <em>J Urol</em>.
 2000;164(1):101-105.</div>
 </div>
-<div id="ref-Freedland2005-yu" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Freedland2005-yu" class="csl-entry" role="listitem">
 <div class="csl-left-margin">5. </div><div
 class="csl-right-inline">Freedland SJ, Humphreys EB, Mangold LA, et al.
 Risk of prostate <span>Cancer–Specific</span> mortality following
 biochemical recurrence after radical prostatectomy. <em>JAMA</em>.
 2005;294(4):433-439.</div>
 </div>
-<div id="ref-Han2001-mx" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Han2001-mx" class="csl-entry" role="listitem">
 <div class="csl-left-margin">6. </div><div class="csl-right-inline">Han
 M, Partin AW, Pound CR, Epstein JI, Walsh PC. Long-term biochemical
 disease-free and cancer-specific survival following anatomic radical
 retropubic prostatectomy. The 15-year johns hopkins experience. <em>Urol
 Clin North Am</em>. 2001;28(3):555-565.</div>
 </div>
-<div id="ref-Van_den_Broeck2019-xb" class="csl-entry"
-role="doc-biblioentry">
+<div id="ref-Van_den_Broeck2019-xb" class="csl-entry" role="listitem">
 <div class="csl-left-margin">7. </div><div class="csl-right-inline">Van
 den Broeck T, Bergh RCN van den, Arfi N, et al. Prognostic value of
 biochemical recurrence following treatment with curative intent for
 prostate cancer: A systematic review. <em>European Urology</em>.
 2019;75:967-987.</div>
 </div>
-<div id="ref-Epstein2016-im" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Epstein2016-im" class="csl-entry" role="listitem">
 <div class="csl-left-margin">8. </div><div
 class="csl-right-inline">Epstein JI, Egevad L, Amin MB, Delahunt B,
 Srigley JR, Humphrey PA. The 2014 international society of urological
@@ -1432,119 +1424,114 @@ pathology (<span>ISUP</span>) consensus conference on gleason grading of
 prostatic carcinoma. <em>American Journal of Surgical Pathology</em>.
 2016;40:244-252.</div>
 </div>
-<div id="ref-Mottet2021-uu" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Mottet2021-uu" class="csl-entry" role="listitem">
 <div class="csl-left-margin">9. </div><div
 class="csl-right-inline">Mottet N, Bergh RCN van den, Briers E, et al.
 <span>EAU-EANM-ESTRO-ESUR-SIOG</span> guidelines on prostate cancer—2020
 update. Part 1: Screening, diagnosis, and local treatment with curative
 intent. <em>Eur Urol</em>. 2021;79(2):243-262.</div>
 </div>
-<div id="ref-Epstein2010-au" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Epstein2010-au" class="csl-entry" role="listitem">
 <div class="csl-left-margin">10. </div><div
 class="csl-right-inline">Epstein JI. An update of the gleason grading
 system. <em>J Urol</em>. 2010;183(2):433-440.</div>
 </div>
-<div id="ref-Pierorazio2013-sq" class="csl-entry"
-role="doc-biblioentry">
+<div id="ref-Pierorazio2013-sq" class="csl-entry" role="listitem">
 <div class="csl-left-margin">11. </div><div
 class="csl-right-inline">Pierorazio PM, Walsh PC, Partin AW, Epstein JI.
 Prognostic gleason grade grouping: Data based on the modified gleason
 scoring system. <em>BJU Int</em>. 2013;111(5):753-760.</div>
 </div>
-<div id="ref-Epstein2016-pf" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Epstein2016-pf" class="csl-entry" role="listitem">
 <div class="csl-left-margin">12. </div><div
 class="csl-right-inline">Epstein JI, Zelefsky MJ, Sjoberg DD, et al. A
 contemporary prostate cancer grading system: A validated alternative to
 the gleason score. <em>Eur Urol</em>. 2016;69(3):428-435.</div>
 </div>
-<div id="ref-Van_Leenders2020-fy" class="csl-entry"
-role="doc-biblioentry">
+<div id="ref-Van_Leenders2020-fy" class="csl-entry" role="listitem">
 <div class="csl-left-margin">13. </div><div
 class="csl-right-inline">Leenders GJLH van, Kwast TH van der, Grignon
 DJ, et al. The 2019 international society of urological pathology
 (<span>ISUP</span>) consensus conference on grading of prostatic
 carcinoma. <em>Am J Surg Pathol</em>. 2020;44(8):e87-e99.</div>
 </div>
-<div id="ref-Ozkan2016-dq" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Ozkan2016-dq" class="csl-entry" role="listitem">
 <div class="csl-left-margin">14. </div><div
 class="csl-right-inline">Ozkan TA, Eruyar AT, Cebeci OO, Memik O, Ozcan
 L, Kuskonmaz I. Interobserver variability in gleason histological
 grading of prostate cancer. <em>Scand J Urol</em>.
 2016;50(6):420-424.</div>
 </div>
-<div id="ref-Krizhevsky2012-zi" class="csl-entry"
-role="doc-biblioentry">
+<div id="ref-Krizhevsky2012-zi" class="csl-entry" role="listitem">
 <div class="csl-left-margin">15. </div><div
 class="csl-right-inline">Krizhevsky A, Sutskever I, Hinton GE. Imagenet
 classification with deep convolutional neural networks. <em>Adv Neural
 Inf Process Syst</em>. 2012;25:1097-1105.</div>
 </div>
-<div id="ref-Swiderska-Chadaj2020-uy" class="csl-entry"
-role="doc-biblioentry">
+<div id="ref-Swiderska-Chadaj2020-uy" class="csl-entry" role="listitem">
 <div class="csl-left-margin">16. </div><div
 class="csl-right-inline">Swiderska-Chadaj Z, Hebeda KM, Brand M van den,
 Litjens G. Artificial intelligence to detect <span>MYC</span>
 translocation in slides of diffuse large b-cell lymphoma. <em>Virchows
 Arch</em>. Published online September 2020.</div>
 </div>
-<div id="ref-Coudray2018-fh" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Coudray2018-fh" class="csl-entry" role="listitem">
 <div class="csl-left-margin">17. </div><div
 class="csl-right-inline">Coudray N, Ocampo PS, Sakellaropoulos T, et al.
 Classification and mutation prediction from non–small cell lung cancer
 histopathology images using deep learning. <em>Nat Med</em>.
 2018;24(10):1559-1567.</div>
 </div>
-<div id="ref-Wulczyn2021-zw" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Wulczyn2021-zw" class="csl-entry" role="listitem">
 <div class="csl-left-margin">18. </div><div
 class="csl-right-inline">Wulczyn E, Steiner DF, Moran M, et al.
 Interpretable survival prediction for colorectal cancer using deep
 learning. <em>NPJ Digit Med</em>. 2021;4(1):71.</div>
 </div>
-<div id="ref-Muhammad2021-an" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Muhammad2021-an" class="csl-entry" role="listitem">
 <div class="csl-left-margin">19. </div><div
 class="csl-right-inline">Muhammad H, Xie C, Sigel CS, Doukas M, Alpert
 L, Fuchs TJ. <span>EPIC-Survival</span>: End-to-end part inferred
 clustering for survival analysis, featuring prognostic stratification
 boosting. <em>arXiv</em>. Published online 2021:2101.11085v2.</div>
 </div>
-<div id="ref-Leo2021-lj" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Leo2021-lj" class="csl-entry" role="listitem">
 <div class="csl-left-margin">20. </div><div class="csl-right-inline">Leo
 P, Janowczyk A, Elliott R, et al. Computer extracted gland features from
 <span>H&amp;E</span> predicts prostate cancer recurrence comparably to a
 genomic companion diagnostic test: A large multi-site study. <em>npj
 Precision Oncology</em>. 2021;5.</div>
 </div>
-<div id="ref-Yamamoto2019-vy" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Yamamoto2019-vy" class="csl-entry" role="listitem">
 <div class="csl-left-margin">21. </div><div
 class="csl-right-inline">Yamamoto Y, Tsuzuki T, Akatsuka J, et al.
 Automated acquisition of explainable knowledge from unannotated
 histopathology images. <em>Nat Commun</em>. 2019;10:5642.</div>
 </div>
-<div id="ref-Rudin2019-fp" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Rudin2019-fp" class="csl-entry" role="listitem">
 <div class="csl-left-margin">22. </div><div
 class="csl-right-inline">Rudin C. Stop explaining black box machine
 learning models for high stakes decisions and use interpretable models
 instead. <em>Nature Machine Intelligence</em>. 2019;1(5):206-215.</div>
 </div>
-<div id="ref-Ghorbani2019-sy" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Ghorbani2019-sy" class="csl-entry" role="listitem">
 <div class="csl-left-margin">23. </div><div
 class="csl-right-inline">Ghorbani A, Wexler J, Zou J, Kim B. Towards
 automatic concept-based explanations. <em>arXiv</em>. Published online
 2019:1902.03129v3.</div>
 </div>
-<div id="ref-Toubaji2011-og" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Toubaji2011-og" class="csl-entry" role="listitem">
 <div class="csl-left-margin">24. </div><div
 class="csl-right-inline">Toubaji A, Albadine R, Meeker AK, et al.
 Increased gene copy number of <span>ERG</span> on chromosome 21 but not
 <span>TMPRSS2-ERG</span> fusion predicts outcome in prostatic
 adenocarcinomas. <em>Mod Pathol</em>. 2011;24(11):1511-1520.</div>
 </div>
-<div id="ref-noauthor_undated-cy" class="csl-entry"
-role="doc-biblioentry">
+<div id="ref-noauthor_undated-cy" class="csl-entry" role="listitem">
 <div class="csl-left-margin">25. </div><div
 class="csl-right-inline">Prostate cancer biorepository network.</div>
 </div>
-<div id="ref-Wang2009-te" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Wang2009-te" class="csl-entry" role="listitem">
 <div class="csl-left-margin">26. </div><div
 class="csl-right-inline">Wang MH, Shugart YY, Cole SR, Platz EA. A
 simulation study of control sampling methods for nested case-control
@@ -1552,125 +1539,121 @@ studies of genetic and molecular biomarkers and prostate cancer
 progression. <em>Cancer Epidemiol Biomarkers Prev</em>.
 2009;18(3):706-711.</div>
 </div>
-<div id="ref-Bankhead2017-tf" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Bankhead2017-tf" class="csl-entry" role="listitem">
 <div class="csl-left-margin">27. </div><div
 class="csl-right-inline">Bankhead P, Loughrey MB, Fernández JA, et al.
 <span>QuPath</span>: Open source software for digital pathology image
 analysis. <em>Sci Rep</em>. 2017;7(1):16878.</div>
 </div>
-<div id="ref-Szymanski2019-mf" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Szymanski2019-mf" class="csl-entry" role="listitem">
 <div class="csl-left-margin">28. </div><div
 class="csl-right-inline">Szymanski P, Kajdanowicz T. Scikit-multilearn:
 A scikit-based python environment for performing multi-label
 classification. <em>J Mach Learn Res</em>. 2019;20(1):209-230.</div>
 </div>
-<div id="ref-Paszke2019-ic" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Paszke2019-ic" class="csl-entry" role="listitem">
 <div class="csl-left-margin">29. </div><div
 class="csl-right-inline">Paszke A, Gross S, Massa F, et al.
 <span>PyTorch</span>: An imperative style, <span>High-Performance</span>
 deep learning library. Published online December 2019. <a
 href="https://arxiv.org/abs/1912.01703">https://arxiv.org/abs/1912.01703</a></div>
 </div>
-<div id="ref-He2019-lm" class="csl-entry" role="doc-biblioentry">
+<div id="ref-He2019-lm" class="csl-entry" role="listitem">
 <div class="csl-left-margin">30. </div><div class="csl-right-inline">He
 T, Zhang Z, Zhang H, Zhang Z, Xie J, Li M. Bag of tricks for image
 classification with convolutional neural networks. In: <em>Proceedings
 of the <span>IEEE/CVF</span> Conference on Computer Vision and Pattern
 Recognition</em>.; 2019:558-567.</div>
 </div>
-<div id="ref-Wightman2021-an" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Wightman2021-an" class="csl-entry" role="listitem">
 <div class="csl-left-margin">31. </div><div
 class="csl-right-inline">Wightman R. <span>PyTorch</span> image models.
 Published online 2021.</div>
 </div>
-<div id="ref-Zhang2019-hr" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Zhang2019-hr" class="csl-entry" role="listitem">
 <div class="csl-left-margin">32. </div><div
 class="csl-right-inline">Zhang MR, Lucas J, Hinton G, Ba J. Lookahead
 optimizer: K steps forward, 1 step back. Published online July 2019. <a
 href="https://arxiv.org/abs/1907.08610">https://arxiv.org/abs/1907.08610</a></div>
 </div>
-<div id="ref-Liu2019-pg" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Liu2019-pg" class="csl-entry" role="listitem">
 <div class="csl-left-margin">33. </div><div class="csl-right-inline">Liu
 L, Jiang H, He P, et al. On the variance of the adaptive learning rate
 and beyond. Published online August 2019. <a
 href="https://arxiv.org/abs/1908.03265">https://arxiv.org/abs/1908.03265</a></div>
 </div>
-<div id="ref-Tan2019-ke" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Tan2019-ke" class="csl-entry" role="listitem">
 <div class="csl-left-margin">34. </div><div class="csl-right-inline">Tan
 M, Le Q. Efficientnet: Rethinking model scaling for convolutional neural
 networks. In: <em>International Conference on Machine Learning</em>.
 PMLR; 2019:6105-6114.</div>
 </div>
-<div id="ref-DeVries2017-ah" class="csl-entry" role="doc-biblioentry">
+<div id="ref-DeVries2017-ah" class="csl-entry" role="listitem">
 <div class="csl-left-margin">35. </div><div
 class="csl-right-inline">DeVries T, Taylor GW. Improved regularization
 of convolutional neural networks with cutout. Published online August
 2017. <a
 href="https://arxiv.org/abs/1708.04552">https://arxiv.org/abs/1708.04552</a></div>
 </div>
-<div id="ref-Buslaev2020-pn" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Buslaev2020-pn" class="csl-entry" role="listitem">
 <div class="csl-left-margin">36. </div><div
 class="csl-right-inline">Buslaev A, Iglovikov VI, Khvedchenya E, Parinov
 A, Druzhinin M, Kalinin AA. Albumentations: Fast and flexible image
 augmentations. <em>Information</em>. 2020;11(2):125.</div>
 </div>
-<div id="ref-Howard2020-wy" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Howard2020-wy" class="csl-entry" role="listitem">
 <div class="csl-left-margin">37. </div><div
 class="csl-right-inline">Howard J, Gugger S. Fastai: A layered
 <span>API</span> for deep learning. <em>Information</em>.
 2020;11(2):108.</div>
 </div>
-<div id="ref-Dluzniewski2012-sk" class="csl-entry"
-role="doc-biblioentry">
+<div id="ref-Dluzniewski2012-sk" class="csl-entry" role="listitem">
 <div class="csl-left-margin">38. </div><div
 class="csl-right-inline">Dluzniewski PJ, Wang MH, Zheng SL, et al.
 Variation in <span>IL10</span> and other genes involved in the immune
 response and in oxidation and prostate cancer recurrence. <em>Cancer
 Epidemiol Biomarkers Prev</em>. 2012;21(10):1774-1782.</div>
 </div>
-<div id="ref-Davidson-Pilon2021-uq" class="csl-entry"
-role="doc-biblioentry">
+<div id="ref-Davidson-Pilon2021-uq" class="csl-entry" role="listitem">
 <div class="csl-left-margin">39. </div><div
 class="csl-right-inline">Davidson-Pilon C, Kalderstam J, Jacobson N, et
 al. <span class="nocase">CamDavidsonPilon/lifelines</span>: 0.25.10.
 Published online 2021.</div>
 </div>
-<div id="ref-Yeh2020-bq" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Yeh2020-bq" class="csl-entry" role="listitem">
 <div class="csl-left-margin">40. </div><div class="csl-right-inline">Yeh
 CK, Kim B, Arik S, Li CL, Pfister T, Ravikumar P. On completeness-aware
 <span>Concept-Based</span> explanations in deep neural networks. <em>Adv
 Neural Inf Process Syst</em>. 2020;33.</div>
 </div>
-<div id="ref-Kvamme2019-pr" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Kvamme2019-pr" class="csl-entry" role="listitem">
 <div class="csl-left-margin">41. </div><div
 class="csl-right-inline">Kvamme H, Borgan Ø, Scheel I. <span
 class="nocase">Time-to-Event</span> prediction with neural networks and
 cox regression. <em>J Mach Learn Res</em>. 2019;20(129):1-30.</div>
 </div>
-<div id="ref-Hollemans2021-rd" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Hollemans2021-rd" class="csl-entry" role="listitem">
 <div class="csl-left-margin">42. </div><div
 class="csl-right-inline">Hollemans E, Verhoef EI, Bangma CH, et al.
 Cribriform architecture in radical prostatectomies predicts oncological
 outcome in gleason score 8 prostate cancer patients. <em>Mod
 Pathol</em>. 2021;34(1):184-193.</div>
 </div>
-<div id="ref-Van_der_Slot2021-xy" class="csl-entry"
-role="doc-biblioentry">
+<div id="ref-Van_der_Slot2021-xy" class="csl-entry" role="listitem">
 <div class="csl-left-margin">43. </div><div
 class="csl-right-inline">Slot MA van der, Hollemans E, Bakker MA den, et
 al. Inter-observer variability of cribriform architecture and percent
 gleason pattern 4 in prostate cancer: Relation to clinical outcome.
 <em>Virchows Arch</em>. 2021;478(2):249-256.</div>
 </div>
-<div id="ref-Van_der_Kwast2021-kn" class="csl-entry"
-role="doc-biblioentry">
+<div id="ref-Van_der_Kwast2021-kn" class="csl-entry" role="listitem">
 <div class="csl-left-margin">44. </div><div
 class="csl-right-inline">Kwast TH van der, Leenders GJ van, Berney DM,
 et al. <span>ISUP</span> consensus definition of cribriform pattern
 prostate cancer. <em>Am J Surg Pathol</em>. Published online May
 2021.</div>
 </div>
-<div id="ref-Epstein2005-hw" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Epstein2005-hw" class="csl-entry" role="listitem">
 <div class="csl-left-margin">45. </div><div
 class="csl-right-inline">Epstein JI, Allsbrook WC Jr, Amin MB, Egevad
 LL, ISUP Grading Committee. The 2005 international society of urological

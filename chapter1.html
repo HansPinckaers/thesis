@@ -7,8 +7,6 @@
   <title>Introduction</title>
   <style>
     html {
-      line-height: 1.5;
-      font-family: Georgia, serif;
       font-size: 12pt;
       color: #1a1a1a;
       background-color: #fdfdfd;
@@ -28,13 +26,16 @@
     @media (max-width: 600px) {
       body {
         font-size: 0.9em;
-        padding: 1em;
+        padding: 12px;
       }
       h1 {
         font-size: 1.8em;
       }
     }
     @media print {
+      html {
+        background-color: white;
+      }
       body {
         background-color: transparent;
         color: black;
@@ -84,9 +85,10 @@
       color: #606060;
     }
     code {
-      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
       font-size: 85%;
       margin: 0;
+      hyphens: manual;
     }
     pre {
       margin: 1em 0;
@@ -151,17 +153,21 @@
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
     ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
       width: 0.8em;
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
+    /* CSS for citations */
     div.csl-bib-body { }
     div.csl-entry {
       clear: both;
     }
-    .hanging div.csl-entry {
+    .hanging-indent div.csl-entry {
       margin-left:2em;
       text-indent:-2em;
     }
@@ -175,8 +181,7 @@
     }
     div.csl-indent {
       margin-left: 2em;
-    }
-  </style>
+    }  </style>
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -185,37 +190,18 @@
 <header id="title-block-header">
 <h1 class="title">Introduction</h1>
 </header>
-<nav id="TOC" role="doc-toc">
-<ul>
-<li><a href="#prognostic-biomarkers"
-id="toc-prognostic-biomarkers">Prognostic biomarkers</a>
-<ul>
-<li><a href="#biomarkers-based-on-histopathology"
-id="toc-biomarkers-based-on-histopathology">Biomarkers based on
-histopathology</a></li>
-<li><a href="#computation-pathology"
-id="toc-computation-pathology">Computation Pathology</a></li>
-</ul></li>
-<li><a href="#convolutional-neural-networks"
-id="toc-convolutional-neural-networks">Convolutional neural
-networks</a></li>
-<li><a href="#weakly-supervised-methods"
-id="toc-weakly-supervised-methods">Weakly supervised methods</a></li>
-<li><a href="#thesis-overview" id="toc-thesis-overview">Thesis
-overview</a></li>
-</ul>
-</nav>
 <p>This thesis will focus on the most common form of prostate cancer,
 prostatic adenocarcinoma. For simplicity, we will refer to this type as
-just ‘prostate cancer.’ This disease affects one in .. men every year,
-making it the most prevalent common type of cancer in men (excluding
-skin cancers). Prostate cancer is a disease of the epithelial cells of
-the prostate. Epithelial cells line our body cavities, our hollow
-organs, and glands. They undergo rapid proliferation, primarily due to
-damage. This proliferation increases the risk of genetic mutations,
-ultimately increasing the risk of a cell uncontrollably dividing.
-Together with enabling factors of its tissue environment, this can give
-rise to cancer.</p>
+just ‘prostate cancer.’ This disease affects one in 1.4 million men
+every year, making it the most prevalent common type of cancer in men
+(excluding skin cancers).<span class="citation"
+data-cites="Sung2021-iz"><sup><strong>Sung2021-iz?</strong></sup></span>
+Prostate cancer is a disease of the epithelial cells of the prostate.
+Epithelial cells line our body cavities, hollow organs, and glands. They
+undergo rapid proliferation, primarily due to damage. This proliferation
+increases the risk of genetic mutations, ultimately increasing the risk
+of a cell uncontrollably dividing. Together with enabling factors of its
+tissue environment, this can give rise to cancer.</p>
 <p>In general, the more aggressive cancerous cells are, the less they
 will behave and morphologically appear like their original function. The
 prostate is a gland that produces prostatic fluid. The fluid is
@@ -232,7 +218,12 @@ Pathologists still use this Gleason grading, albeit several revisions
 later<span class="citation"
 data-cites="Epstein2016-im"><sup>1</sup></span>, to classify prostate
 cancer.</p>
-<p>[Insert image Gleason grown patterns]</p>
+<p><img src="chpt1_imgs/Gleasonscore.jpg" /></p>
+<p><strong>Gleason’s growth patterns.</strong> Image of the Gleason
+score for prostate cancer grading based on original description in 1977.
+From: Morphology &amp; Grade. ICD-O-3 Morphology Codes. National
+Institutes of Health.<span class="citation"
+data-cites="zotero-512"><sup>2</sup></span></p>
 <h1 id="prognostic-biomarkers">Prognostic biomarkers</h1>
 <p>To decide on a treatment plan, clinicians divide patients into risk
 groups according to traditional baseline characteristics, such as PSA
@@ -240,7 +231,7 @@ blood level, Gleason grade, tumor location, tumor size, and lymph node
 status.[lam2019] This information is gathered from histopathological,
 radiological assessment, and lab assessments. These assessments can be
 considered biomarkers as they indicate the prognosis of a patient<span
-class="citation" data-cites="chen2011"><sup>2</sup></span>. The more
+class="citation" data-cites="chen2011"><sup>3</sup></span>. The more
 precise these assessments are, the better we can tailor the treatment to
 the specific patient; this is known as personalized medicine.</p>
 <p>To make treatment more tailored to the patient, researchers try to
@@ -249,7 +240,7 @@ most prostate cancers progress so slowly that they are unlikely to
 threaten the affected individual’s survival, and patients with the same
 histological and clinical characteristics, can have strikingly different
 outcomes<span class="citation"
-data-cites="cucchiara2018"><sup>3</sup></span>. Being able to pick out
+data-cites="cucchiara2018"><sup>4</sup></span>. Being able to pick out
 patients with good prognostis would improve their quality of life since
 treatments for prostate cancer obviously have adverse effects
 (#tab:adverse){reference-type=“ref” reference=“tab:adverse”}). Equally
@@ -257,151 +248,163 @@ so for patients for which we can find out the treatment will not
 contribute to their health. To prevent adverse effects and increase
 treatment response, researchers are developing new markers in
 genomics<span class="citation"
-data-cites="cucchiara2018"><sup>3</sup></span>, radiology<span
-class="citation" data-cites="roest2023"><sup>4</sup></span>, and
+data-cites="cucchiara2018"><sup>4</sup></span>, radiology<span
+class="citation" data-cites="roest2023"><sup>5</sup></span>, and
 pathology, the latter of which is the subject of this thesis.</p>
-<div id="tab:adverse">
 <table>
 <caption>Common Prostate Cancer Treatment Options and Potential Adverse
 Effects, reproduced from Dunn et al.<span class="citation"
-data-cites="dunn2011"><sup>5</sup></span></caption>
+data-cites="dunn2011"><sup>6</sup></span> ::: </caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">: {#tab:adverse}</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;"><strong>Treatment Option</strong></td>
-<td style="text-align: left;"><strong>Disease Progression</strong></td>
-<td style="text-align: left;"><strong>Potential Adverse
-Effects</strong></td>
+<td><strong>Disease Progression</strong></td>
+<td><strong>Potential Adverse Effects</strong></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Active surveillance</td>
-<td style="text-align: left;">Localized</td>
-<td style="text-align: left;">Illness uncertainty</td>
+<td>Localized</td>
+<td>Illness uncertainty</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Radical prostatectomy</td>
-<td style="text-align: left;">Localized</td>
-<td style="text-align: left;">Erectile dysfunction</td>
+<td>Localized</td>
+<td>Erectile dysfunction</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Urinary incontinence</td>
+<td></td>
+<td>Urinary incontinence</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">External beam radiation</td>
-<td style="text-align: left;">Localized and advanced disease</td>
-<td style="text-align: left;">Urinary urgency and frequency, dysuria,
-diarrhea and proctitis</td>
+<td>Localized and advanced disease</td>
+<td>Urinary urgency and frequency</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Erectile dysfunction</td>
+<td></td>
+<td>Dysuria, diarrhea and proctitis</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Urinary incontinence</td>
+<td></td>
+<td>Erectile dysfunction</td>
 </tr>
 <tr class="even">
+<td style="text-align: left;"></td>
+<td></td>
+<td>Urinary incontinence</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">Brachytherapy</td>
-<td style="text-align: left;">Localized</td>
-<td style="text-align: left;">Urinary urgency and frequency, dysuria,
-diarrhea and proctitis</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Erectile dysfunction</td>
+<td>Localized</td>
+<td>Urinary urgency and frequency</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"></td>
+<td></td>
+<td>Dysuria, diarrhea and proctitis</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;"></td>
-<td style="text-align: left;">Urinary incontinence</td>
+<td></td>
+<td>Erectile dysfunction</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td></td>
+<td>Urinary incontinence</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Cryotherapy</td>
-<td style="text-align: left;">Localized</td>
-<td style="text-align: left;">Erectile dysfunction</td>
+<td>Localized</td>
+<td>Erectile dysfunction</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Urinary incontinence and retention</td>
+<td></td>
+<td>Urinary incontinence and retention</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Rectal pain and fistula</td>
+<td></td>
+<td>Rectal pain and fistula</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Hormone therapy</td>
-<td style="text-align: left;">Advanced</td>
-<td style="text-align: left;">Fatigue</td>
+<td>Advanced</td>
+<td>Fatigue</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Hot flashes, and flare effect</td>
+<td></td>
+<td>Hot flashes, and flare effect</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Hyperlipidemia</td>
+<td></td>
+<td>Hyperlipidemia</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Insulin resistance</td>
+<td></td>
+<td>Insulin resistance</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Cardiovascular disease</td>
+<td></td>
+<td>Cardiovascular disease</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Anemia</td>
+<td></td>
+<td>Anemia</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Osteoporosis</td>
+<td></td>
+<td>Osteoporosis</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Erectile dysfunction</td>
+<td></td>
+<td>Erectile dysfunction</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Cognitive deficits</td>
+<td></td>
+<td>Cognitive deficits</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Chemotherapy</td>
-<td style="text-align: left;">Advanced</td>
-<td style="text-align: left;">Myelosuppression</td>
+<td>Advanced</td>
+<td>Myelosuppression</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Hypersensitivity reaction</td>
+<td></td>
+<td>Hypersensitivity reaction</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Gastrointestinal upset</td>
+<td></td>
+<td>Gastrointestinal upset</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Peripheral neuropathy</td>
+<td></td>
+<td>Peripheral neuropathy</td>
 </tr>
 </tbody>
 </table>
-</div>
 <h2 id="biomarkers-based-on-histopathology">Biomarkers based on
 histopathology</h2>
 <p>We know that histopathology holds prognostic information. Commonly,
@@ -429,26 +432,18 @@ arise.</p>
 <p>Litjens et al. [1] gave an overview of deep learning applications in
 computational pathology up to 2016. Some early successes in the field
 focused on segmentation, tissue classification, and disease
-classification. Not on prognosis or treatment response prediction
-treatment. Likely due to the fact these tasks are relatively easier and
-since this kind of data is relatively cheap to obtain compared to
-prognosis information</p>
-<!--
-More recent work focuses on clinical implementation and validation. Campanella
-et al. [2] propose a system for prostate cancer detection trained with weak
-slide-level labels. Bulten et al. [3] validate a system to determine the
-Gleason grade of prostate cancer biopsies, showing human-level performance.   
-
-Especially interesting for clinical implementation is the ability to learn with
-weaker labels, circumventing expensive precise annotations. Although labels
-directly from pathology reports are noisy, the information is good enough to
-guide treatment decisions. As such, recent focus, like in this thesis, is to
-train deep learning models directly using these readily available labels.
-
-Overall, deep learning shows potential to enhance and assist pathology using
-the digital pathology slides. The following chapters will dive deeper into the
-specific computational pathology tasks tackled in this thesis.
--->
+classification. Often reaching comparable results on the manual
+performance of the tasks by pathologists. Notably, the vast majority of
+these tasks are not on prognosis or treatment response prediction.
+Likely due to the fact these tasks are relatively easier and the kind of
+data needed is relatively cheap to obtain compared to survival data.</p>
+<p>All state-of-the-art methods use some flavor of deep learning. A
+method where we train a model with multiple layers of computations,
+interwoven with non-linearities. A decade ago, optimizing these neural
+networks on GPU accelerators became common. The use of GPU made us able
+to develop models with a lot of layers (hence ‘deep’ learning) on large
+datasets. From the start, we have been using a type of neural network,
+termed convolutional neural networks, in vision applications.</p>
 <h1 id="convolutional-neural-networks">Convolutional neural
 networks</h1>
 <p>Convolutional neural networks (CNNs) have emerged among the
@@ -492,7 +487,9 @@ convolutional neural networks (CNNs) with large input images while
 preventing memory bottlenecks. Their methods can be roughly grouped into
 three categories: (A) altering the dataset, (B) altering usage of the
 dataset, and (C) altering the network or underlying implementations.</p>
-<pre><code>As a result of the memory limitations, most networks are trained on small
+<!--
+```
+As a result of the memory limitations, most networks are trained on small
 patches from the WSI. This patch-based training requires detailed pixel-level
 annotations of the classes, such as outlines of tumor regions by an expert
 pathologist. However, pixel-level labeling is expensive, time-consuming, and
@@ -515,7 +512,7 @@ Methods like recurrent attention networks try to increase the field-of-view by
 analyzing multiple patches. However, memory constraints limit the patch size,
 and patches must be kept in memory to calculate attention weights. Overall,
 most current weakly supervised methods rely on patches, constraining the
-network&#39;s field-of-view.
+network's field-of-view.
 
 In this thesis, a novel streaming method is proposed to train CNNs end-to-end
 on entire WSIs with slide-level labels. By reconstructing activations
@@ -524,61 +521,66 @@ full contextual information at high resolution, without relying on patches.
 Experiments show streaming reaches performance on par with patch-based methods
 needing more supervision. Thus, streaming enables direct learning from
 morphology to aid histopathology analysis using readily available slide-level
-labels. Chapter 2 will go more into depth on this.</code></pre>
+labels. Chapter 2 will go more into depth on this.
+```
+-->
 <h1 id="thesis-overview">Thesis overview</h1>
-<pre><code>Chapter 2 proposes a method called &quot;streaming&quot; to train convolutional neural
-networks end-to-end on multi-megapixel histopathology images, circumventing
-memory limitations. We tiles the input image and reconstructs activations,
-allowing the use of entire high-resolution images during training without
-cropping. 
-
-Chapter 3 applies streaming to train models on whole prostate biopsy images
-using only slide-level labels from pathology reports. It shows a modern CNN can
-learn from high-resolution images without patch-level annotations. The method
-reaches similar performance to state-of-the-art patch-based and multiple
-instance learning techniques.
-
-Chapter 4 demonstrates a deep learning system to predict biochemical recurrence
-of prostate cancer using tissue morphology. Trained on a nested case-control
-study and validated on an independent cohort, the system finds patterns
-predictive of recurrence beyond standard Gleason grading. Concept-based
-explanations show tissue features aligned with pathologist interpretation.
-
-In summary, the thesis explores computational pathology methods to analyze
-entire high-resolution histopathology images despite memory constraints. It
-shows neural networks can learn from morphology to aid prostate cancer
-diagnosis and prognosis when trained end-to-end on whole images using readily
-available slide-level labels.</code></pre>
-<div id="refs" class="references csl-bib-body" role="doc-bibliography">
-<div id="ref-Epstein2016-im" class="csl-entry" role="doc-biblioentry">
+<p>Chapter 2 proposes a method called “streaming” to train convolutional
+neural networks end-to-end on multi-megapixel histopathology images,
+circumventing memory limitations. We tiles the input image and
+reconstructs activations, allowing the use of entire high-resolution
+images during training without cropping.</p>
+<p>Chapter 3 applies streaming to train models on whole prostate biopsy
+images using only slide-level labels from pathology reports. It shows a
+modern CNN can learn from high-resolution images without patch-level
+annotations. The method reaches similar performance to state-of-the-art
+patch-based and multiple instance learning techniques.</p>
+<p>Chapter 4 demonstrates a deep learning system to predict biochemical
+recurrence of prostate cancer using tissue morphology. Trained on a
+nested case-control study and validated on an independent cohort, the
+system finds patterns predictive of recurrence beyond standard Gleason
+grading. Concept-based explanations show tissue features aligned with
+pathologist interpretation.</p>
+<p>In summary, the thesis explores computational pathology methods to
+analyze entire high-resolution histopathology images despite memory
+constraints. It shows neural networks can learn from morphology to aid
+prostate cancer diagnosis and prognosis when trained end-to-end on whole
+images using readily available slide-level labels.</p>
+<div id="refs" class="references csl-bib-body" role="list">
+<div id="ref-Epstein2016-im" class="csl-entry" role="listitem">
 <div class="csl-left-margin">1. </div><div
 class="csl-right-inline">Epstein JI, Egevad L, Amin MB, Delahunt B,
 Srigley JR, Humphrey PA. The 2014 international society of urological
 pathology (<span>ISUP</span>) consensus conference on gleason grading of
 prostatic carcinoma. 2016;40:244-252.</div>
 </div>
-<div id="ref-chen2011" class="csl-entry" role="doc-biblioentry">
-<div class="csl-left-margin">2. </div><div class="csl-right-inline">Chen
+<div id="ref-zotero-512" class="csl-entry" role="listitem">
+<div class="csl-left-margin">2. </div><div
+class="csl-right-inline">Morphology &amp; <span>Grade</span> |
+<span>SEER Training</span>.</div>
+</div>
+<div id="ref-chen2011" class="csl-entry" role="listitem">
+<div class="csl-left-margin">3. </div><div class="csl-right-inline">Chen
 XH, Huang S, Kerr D. Biomarkers in clinical medicine. Published online
 2011.</div>
 </div>
-<div id="ref-cucchiara2018" class="csl-entry" role="doc-biblioentry">
-<div class="csl-left-margin">3. </div><div
+<div id="ref-cucchiara2018" class="csl-entry" role="listitem">
+<div class="csl-left-margin">4. </div><div
 class="csl-right-inline">Cucchiara V, Cooperberg MR, Dall’Era M, et al.
 Genomic <span>Markers</span> in <span>Prostate Cancer Decision
 Making</span>. <em>European Urology</em>. 2018;73(4):572-582. doi:<a
 href="https://doi.org/10.1016/j.eururo.2017.10.036">10.1016/j.eururo.2017.10.036</a></div>
 </div>
-<div id="ref-roest2023" class="csl-entry" role="doc-biblioentry">
-<div class="csl-left-margin">4. </div><div
+<div id="ref-roest2023" class="csl-entry" role="listitem">
+<div class="csl-left-margin">5. </div><div
 class="csl-right-inline">Roest C, Kwee TC, Saha A, Fütterer JJ, Yakar D,
 Huisman H. <span class="nocase">AI-assisted</span> biparametric
 <span>MRI</span> surveillance of prostate cancer: Feasibility study.
 <em>European Radiology</em>. 2023;33(1):89-96. doi:<a
 href="https://doi.org/10.1007/s00330-022-09032-7">10.1007/s00330-022-09032-7</a></div>
 </div>
-<div id="ref-dunn2011" class="csl-entry" role="doc-biblioentry">
-<div class="csl-left-margin">5. </div><div class="csl-right-inline">Dunn
+<div id="ref-dunn2011" class="csl-entry" role="listitem">
+<div class="csl-left-margin">6. </div><div class="csl-right-inline">Dunn
 MW, Kazer MW. Prostate <span>Cancer Overview</span>. <em>Seminars in
 Oncology Nursing</em>. 2011;27(4):241-250. doi:<a
 href="https://doi.org/10.1016/j.soncn.2011.07.002">10.1016/j.soncn.2011.07.002</a></div>

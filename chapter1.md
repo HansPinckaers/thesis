@@ -1,13 +1,13 @@
 This thesis will focus on the most common form of prostate cancer, prostatic
 adenocarcinoma. For simplicity, we will refer to this type as just 'prostate
-cancer.' This disease affects one in .. men every year, making it the most
-prevalent common type of cancer in men (excluding skin cancers). Prostate
-cancer is a disease of the epithelial cells of the prostate. Epithelial cells
-line our body cavities, our hollow organs, and glands. They undergo rapid
-proliferation, primarily due to damage. This proliferation increases the risk
-of genetic mutations, ultimately increasing the risk of a cell uncontrollably
-dividing. Together with enabling factors of its tissue environment, this can
-give rise to cancer.
+cancer.' This disease affects one in 1.4 million men every year, making it the
+most prevalent common type of cancer in men (excluding skin
+cancers).[@Sung2021-iz] Prostate cancer is a disease of the epithelial cells of
+the prostate. Epithelial cells line our body cavities, hollow organs, and
+glands. They undergo rapid proliferation, primarily due to damage. This
+proliferation increases the risk of genetic mutations, ultimately increasing
+the risk of a cell uncontrollably dividing. Together with enabling factors of
+its tissue environment, this can give rise to cancer.
 
 In general, the more aggressive cancerous cells are, the less they will behave
 and morphologically appear like their original function. The prostate is a
@@ -22,7 +22,11 @@ correlation between growth patterns and prognosis in prostate cancer in the
 1960s[@cite_original]. Pathologists still use this Gleason grading, albeit
 several revisions later[@Epstein2016-im], to classify prostate cancer.
 
-[Insert image Gleason grown patterns]
+![](chpt1_imgs/Gleasonscore.jpg)
+
+**Gleason's growth patterns.** Image of the Gleason score for prostate cancer
+grading based on original description in 1977. From: Morphology & Grade.
+ICD-O-3 Morphology Codes. National Institutes of Health.[@zotero-512]
 
 # Prognostic biomarkers
 
@@ -48,16 +52,19 @@ health. To prevent adverse effects and increase treatment response, researchers
 are developing new markers in genomics[@cucchiara2018], radiology[@roest2023],
 and pathology, the latter of which is the subject of this thesis.
 
+\pagebreak
 ::: {#tab:adverse}
-  ------------------------ ------------------------------- ----------------------------------------------------------------------------------------------------
+  ------------------------ ------------------------------- --------------------------------------
   **Treatment Option**     **Disease Progression**         **Potential Adverse Effects**
   Active surveillance      Localized                       Illness uncertainty
   Radical prostatectomy    Localized                       Erectile dysfunction
                                                            Urinary incontinence
-  External beam radiation  Localized and advanced disease  Urinary urgency and frequency, dysuria, diarrhea and proctitis
+  External beam radiation  Localized and advanced disease  Urinary urgency and frequency
+                                                           Dysuria, diarrhea and proctitis
                                                            Erectile dysfunction
                                                            Urinary incontinence
-  Brachytherapy            Localized                       Urinary urgency and frequency, dysuria, diarrhea and proctitis
+  Brachytherapy            Localized                       Urinary urgency and frequency
+                                                           Dysuria, diarrhea and proctitis
                                                            Erectile dysfunction
                                                            Urinary incontinence
   Cryotherapy              Localized                       Erectile dysfunction
@@ -76,10 +83,10 @@ and pathology, the latter of which is the subject of this thesis.
                                                            Hypersensitivity reaction
                                                            Gastrointestinal upset
                                                            Peripheral neuropathy
-  ------------------------ ------------------------------- ----------------------------------------------------------------------------------------------------
+  ------------------------ ------------------------------- --------------------------------------
 
-  : Common Prostate Cancer Treatment Options and Potential Adverse Effects, reproduced from Dunn et al.[@dunn2011]
-:::
+  : Common Prostate Cancer Treatment Options and Potential Adverse Effects,
+  reproduced from Dunn et al.[@dunn2011] ::: \pagebreak
 
 ## Biomarkers based on histopathology
 
@@ -109,27 +116,20 @@ computational analysis and assistance arise.
 
 Litjens et al. [1] gave an overview of deep learning applications in
 computational pathology up to 2016. Some early successes in the field focused
-on segmentation, tissue classification, and disease classification. Not on
-prognosis or treatment response prediction treatment. Likely due to the fact
-these tasks are relatively easier and since this kind of data is relatively
-cheap to obtain compared to prognosis information
+on segmentation, tissue classification, and disease classification. Often
+reaching comparable results on the manual performance of the tasks by
+pathologists. Notably, the vast majority of these tasks are not on prognosis or
+treatment response prediction. Likely due to the fact these tasks are
+relatively easier and the kind of data needed is relatively cheap to obtain
+compared to survival data. 
 
-<!--
-More recent work focuses on clinical implementation and validation. Campanella
-et al. [2] propose a system for prostate cancer detection trained with weak
-slide-level labels. Bulten et al. [3] validate a system to determine the
-Gleason grade of prostate cancer biopsies, showing human-level performance.   
-
-Especially interesting for clinical implementation is the ability to learn with
-weaker labels, circumventing expensive precise annotations. Although labels
-directly from pathology reports are noisy, the information is good enough to
-guide treatment decisions. As such, recent focus, like in this thesis, is to
-train deep learning models directly using these readily available labels.
-
-Overall, deep learning shows potential to enhance and assist pathology using
-the digital pathology slides. The following chapters will dive deeper into the
-specific computational pathology tasks tackled in this thesis.
--->
+All state-of-the-art methods use some flavor of deep learning. A method where
+we train a model with multiple layers of computations, interwoven with
+non-linearities. A decade ago, optimizing these neural networks on GPU
+accelerators became common. The use of GPU made us able to develop models with
+a lot of layers (hence 'deep' learning) on large datasets. From the start, we
+have been using a type of neural network, termed convolutional neural networks,
+in vision applications. 
 
 # Convolutional neural networks
 
@@ -178,6 +178,7 @@ bottlenecks. Their methods can be roughly grouped into three categories: (A)
 altering the dataset, (B) altering usage of the dataset, and (C) altering the
 network or underlying implementations.
 
+<!--
 ```
 As a result of the memory limitations, most networks are trained on small
 patches from the WSI. This patch-based training requires detailed pixel-level
@@ -213,10 +214,10 @@ needing more supervision. Thus, streaming enables direct learning from
 morphology to aid histopathology analysis using readily available slide-level
 labels. Chapter 2 will go more into depth on this.
 ```
+-->
 
 #  Thesis overview
 
-```
 Chapter 2 proposes a method called "streaming" to train convolutional neural
 networks end-to-end on multi-megapixel histopathology images, circumventing
 memory limitations. We tiles the input image and reconstructs activations,
@@ -240,4 +241,5 @@ entire high-resolution histopathology images despite memory constraints. It
 shows neural networks can learn from morphology to aid prostate cancer
 diagnosis and prognosis when trained end-to-end on whole images using readily
 available slide-level labels.
-```
+
+\pagebreak

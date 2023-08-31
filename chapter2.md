@@ -202,8 +202,9 @@ $n \leq N$ (for clarity, we will start all indices from 0). Our goal is
 to decrease the memory load of an individual convolution by tiling the
 input. Following [\[eq:1\]](#eq:1){reference-type="eqref"
 reference="eq:1"}, we can achieve the same result as $x * w$, by doing
+<!--\label{eq:2}--> \\
 two convolutions on the input: $$\begin{gathered}
-a = \{(x * w)_0,\ldots,(x * w)_{f//2}\} \label{eq:2}\\
+a = \{(x * w)_0,\ldots,(x * w)_{f//2}\} 
 b = \{(x * w)_{f//2+1},\ldots,(x * w)_f\} \label{eq:3}
 \end{gathered}$$ where $//$ denotes a divide and floor operation.
 

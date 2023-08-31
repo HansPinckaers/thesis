@@ -4,11 +4,9 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Discussion</title>
+  <title>Introduction</title>
   <style>
     html {
-      line-height: 1.5;
-      font-family: Georgia, serif;
       font-size: 12pt;
       color: #1a1a1a;
       background-color: #fdfdfd;
@@ -28,13 +26,16 @@
     @media (max-width: 600px) {
       body {
         font-size: 0.9em;
-        padding: 1em;
+        padding: 12px;
       }
       h1 {
         font-size: 1.8em;
       }
     }
     @media print {
+      html {
+        background-color: white;
+      }
       body {
         background-color: transparent;
         color: black;
@@ -84,9 +85,10 @@
       color: #606060;
     }
     code {
-      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
       font-size: 85%;
       margin: 0;
+      hyphens: manual;
     }
     pre {
       margin: 1em 0;
@@ -151,8 +153,11 @@
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
     ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
       width: 0.8em;
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
@@ -164,19 +169,8 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Discussion</h1>
+<h1 class="title">Introduction</h1>
 </header>
-<nav id="TOC" role="doc-toc">
-<ul>
-<li><a href="#generalization"
-id="toc-generalization">Generalization</a></li>
-<li><a href="#academic-and-industry-overlap"
-id="toc-academic-and-industry-overlap">Academic and industry
-overlap</a></li>
-<li><a href="#bigger-picture" id="toc-bigger-picture">Bigger
-picture</a></li>
-</ul>
-</nav>
 <p>In this PhD thesis, we addressed the main problem of the
 dimensionality of whole slide images in computational pathology and
 prostate cancer prognosis. These images are so large that previous works
