@@ -25,7 +25,7 @@ several revisions later[@Epstein2016-im], to classify prostate cancer.
 ![](chpt1_imgs/Gleasonscore.jpg)
 
 **Gleason's growth patterns.** Image of the Gleason score for prostate cancer
-grading based on original description in 1977. From: Morphology & Grade.
+grading based on the original description in 1977. From: Morphology & Grade.
 ICD-O-3 Morphology Codes. National Institutes of Health.[@zotero-512]
 
 # Prognostic biomarkers
@@ -44,7 +44,7 @@ biomarkers. There is a demand for new biomarkers because most prostate cancers
 progress so slowly that they are unlikely to threaten the affected individual's
 survival, and patients with the same histological and clinical characteristics,
 can have strikingly different outcomes [@cucchiara2018]. Being able to pick out
-patients with good prognostis would improve their quality of life since
+patients with good prognoses would improve their quality of life since
 treatments for prostate cancer obviously have adverse effects
 (#tab:adverse){reference-type="ref" reference="tab:adverse"}). Equally so for
 patients for which we can find out the treatment will not contribute to their
@@ -140,11 +140,13 @@ classification and segmentation.
 
 The central component of a convolutional neural network is often represented as
 a sliding kernel (or filter) over an input matrix, producing an output matrix.
-This has several advantages; we can use a smaller kernel than the whole making
-the network less complex while exploiting the fact that objects in the image
-are translation invariant. A cat in the upper-left corner is still a cat in the
-lower right corner. We introduce this inductive bias to the network by using
-convolutions.
+See Figure 1. This has several advantages; we can use a smaller kernel than the
+whole making the network less complex while exploiting the fact that objects in
+the image are translation invariant. A cat in the upper-left corner is still a
+cat in the lower-right corner. We introduce this inductive bias to the network
+by using convolutions.
+
+#### TODO: Figure 1.
 
 Most convolutional neural network architectures have alternating blocks of
 layers consisting of a convolutional operation, a non-linear activation
@@ -161,10 +163,12 @@ images. Consequently, most natural image datasets in computer vision, such as
 ImageNet and CIFAR-10, contain sub-megapixel images to circumvent memory
 limitations. 
 
+#### TODO: Overview of a whole CNN
+
 In specific domains like remote sensing and medical imaging, there is a need to
-train CNNs on high-resolution, where most of the information is contained.
-Ideally we want to combine the high-resolution information with more global
-context, as pathologists can do during daily practive. However, computer memory
+train CNNs in high-resolution, where most of the information is contained.
+Ideally, we want to combine the high-resolution information with a more global
+context, as pathologists can do during daily practice. However, computer memory
 becomes a limiting factor. The memory requirements of CNNs increase
 proportionally to the input size of the network, quickly filling up memory with
 multi-megapixel images. As a result, only small CNNs can be trained with such
@@ -174,56 +178,48 @@ computing clusters.
 # Weakly supervised methods 
 
 For others, several authors have suggested approaches to train convolutional
-neural networks (CNNs) with large input images while preventing memory
-bottlenecks. Their methods can be roughly grouped into three categories: (A)
-altering the dataset, (B) altering usage of the dataset, and (C) altering the
-network or underlying implementations.
+neural networks (CNNs) with large whole-slide images while preventing memory
+bottlenecks. 
 
-<!--
-```
-As a result of the memory limitations, most networks are trained on small
-patches from the WSI. This patch-based training requires detailed pixel-level
-annotations of the classes, such as outlines of tumor regions by an expert
-pathologist. However, pixel-level labeling is expensive, time-consuming, and
-not routinely performed in clinical practice.
+The most common solution is to train on high-resolution, but smaller regions
+of the slide. These patches are combined with annotations, and this reduces the
+need for the whole slide to be in memory. While this reduces the context of the
+whole slide down to what's contained in a small patch, for common problems,
+this is context enough. For example, tumor classification or segmentation don't
+require the context of the whole slide.
 
-To overcome this, researchers have developed weakly supervised methods that can
-learn from readily available slide-level labels in pathology reports, without
-expensive patch-level annotations. A popular approach is multiple instance
-learning (MIL). In MIL, a CNN is trained on patches under the assumption that a
-positive slide contains at least one positive patch. Only the most informative
-patch per slide is used for backpropagation. However, this limits the
-field-of-view and contextual information.
+It is possible to train with the slide-level label and patches, this approach
+is called Multiple-Instance Learning. Here we assume that one or a few patches
+are enough the predict the label. In a binary classification setting, a
+positive slide contains at least one positive patch and a negative slide none.
+Only the most informative patches per slide are used for backpropagation. [cite MIL]
 
-Another weakly supervised approach is to compress the WSI into a
-lower-dimensional latent space using autoencoders. The embedding can be used to
-train a model per patch. However, useful information may be lost during
-compression. Also, relationships between patches are disregarded.
+Another weakly supervised approach is to train a model to compress the WSI into
+a lower-dimensional latent space. This model is often trained on patches, in a
+generative or self-supervised way. This allows us to embed the whole slide,
+patch-per-patch into a smaller matrix, and train a supervised network on the
+compression. [cite NIC/CLAM]
 
-Methods like recurrent attention networks try to increase the field-of-view by
-analyzing multiple patches. However, memory constraints limit the patch size,
-and patches must be kept in memory to calculate attention weights. Overall,
-most current weakly supervised methods rely on patches, constraining the
-network's field-of-view.
+There are other, even more engineering-heavy, approaches to dealing with the
+high-resolution of slides. Such as using reinforcement learning, ...
 
 In this thesis, a novel streaming method is proposed to train CNNs end-to-end
-on entire WSIs with slide-level labels. By reconstructing activations
-tile-by-tile, streaming removes the need to crop images. A CNN can learn from
-full contextual information at high resolution, without relying on patches.
-Experiments show streaming reaches performance on par with patch-based methods
+on entire WSIs with slide-level labels. By reconstructing activations and
+gradients tile-by-tile, we can develop a memory-efficient implementation of the
+convolutional layers in a CNN. This way, a CNN can learn from full contextual
+information at high resolution, without relying on patches. Experiments show
+streaming reaches performance on par with or improving on patch-based methods
 needing more supervision. Thus, streaming enables direct learning from
 morphology to aid histopathology analysis using readily available slide-level
-labels. Chapter 2 will go more into depth on this.
-```
--->
+labels. 
 
 #  Thesis overview
 
 Chapter 2 proposes a method called "streaming" to train convolutional neural
 networks end-to-end on multi-megapixel histopathology images, circumventing
-memory limitations. We tiles the input image and reconstructs activations,
-allowing the use of entire high-resolution images during training without
-cropping. 
+memory limitations. We tile the input image and reconstruct activations and
+gradients, allowing the use of entire high-resolution images during training
+without cropping. 
 
 Chapter 3 applies streaming to train models on whole prostate biopsy images
 using only slide-level labels from pathology reports. It shows a modern CNN can
@@ -231,16 +227,18 @@ learn from high-resolution images without patch-level annotations. The method
 reaches similar performance to state-of-the-art patch-based and multiple
 instance learning techniques.
 
-Chapter 4 demonstrates a deep learning system to predict biochemical recurrence
-of prostate cancer using tissue morphology. Trained on a nested case-control
-study and validated on an independent cohort, the system finds patterns
-predictive of recurrence beyond standard Gleason grading. Concept-based
-explanations show tissue features aligned with pathologist interpretation.
+Chapter 4 demonstrates a deep learning system to predict the biochemical
+recurrence of prostate cancer using tissue morphology. Trained on a nested
+case-control study and validated on an independent cohort, the system finds
+patterns predictive of recurrence beyond standard Gleason grading.
+Concept-based explanations show tissue features aligned with pathologist
+interpretation.
 
-In summary, the thesis explores computational pathology methods to analyze
-entire high-resolution histopathology images despite memory constraints. It
-shows neural networks can learn from morphology to aid prostate cancer
-diagnosis and prognosis when trained end-to-end on whole images using readily
-available slide-level labels.
+Furthermore, we will show the preliminary results of streaming on a prognostic
+task in the discussion. In summary, the thesis explores computational pathology
+methods to analyze entire high-resolution histopathology images despite memory
+constraints. It shows neural networks can learn from morphology to aid prostate
+cancer diagnosis and prognosis when trained end-to-end on whole images using
+readily available slide-level labels.
 
 \pagebreak
