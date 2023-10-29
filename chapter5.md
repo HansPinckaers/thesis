@@ -28,11 +28,31 @@ This thesis showed that we can optimize state-of-the-art convolutional neural ne
 
 A natural next step would be to optimize a CNN on whole-slide images on a cohort of prostate cancer patients to a survival endpoint. We started on this endeavor and we would like to present preliminary results here.
 
-## Work in progress
+## Gigapixel streaming towards a prognosis endpoint
 
-At our hospital, we collected a cohort of patient of 903 patients which underwent prostatectomy, with follow-up information. Primary endpoint for this cohort was biochemical recurrence. This dataset, collected by the Urology department recorded biochemical recurrence by monitoring ordered lab tests of included patients. These tests were ordered by treating physicians in the hospital, or outside by general practitioners. Generally, after one year of follow-up, patients are transferred to their general practitioner for monitoring. 
+### The data
+At our hospital, we collected a cohort of patient of 903 patients which underwent prostatectomy, with follow-up information. Primary endpoint for this cohort was biochemical recurrence. This dataset, collected by the Urology department recorded biochemical recurrence by monitoring ordered lab tests of included patients. Patients treated in the hospital, between 1992 and 2012 were included. These tests were ordered by treating physicians in the hospital, or outside by general practitioners. Generally, after one year of follow-up, patients are transferred to their general practitioner for monitoring. 
+
+Whole-slides were picked from the hospital archive containing the highest grade tumor, based on the pathology reports. The number of slides ranged from 1 to 9 per patient, with a median of two slides. Before streaming the slides, the tissue on the slides was combined to create one image with all the tissue. This could result in multiple gigapixel-sized images.
+
+<!-- >>> pd.read_csv('/Users/Hans/PhD/recurrence/packer/packer_data_file.csv')['name'].value_counts().median() -->
 
 ![](chpt5_imgs/inclusion.png){width="\\textwidth"}
+<!-- https://docs.google.com/presentation/d/1JkE6KibsRMDyfYkfxH8U1GhIvSkAnd9PLbyGgmCV5p8/edit#slide=id.p -->
+
+### Experimental setup
+
+We divided this cohort into three sets; a train set, consisting of 257 patients (with 45 biochemical recurrence events), a limited validation set (110 patients, 19 events) and an hold-out set (300 patients, 53 events). 
+
+As an experimental set-up, for this proof-of-concept, we took the methodology of chapter 3; a ResNet-34, trained using SGD+momentum optimizer until convergence; we optimized towards time-to-event like chapter 4, using the Huber loss. Given time constraints, we couldn't perform further hyperparameter tuning or experimentation, 
+
+### Results
+
+![](chpt5_imgs/results.png){width="\\textwidth"}
+
+### Discussion
+Future work could focus on using survival based losses.
+
 
 <!-- @Geert: Do we know who helped us ? -->
 
