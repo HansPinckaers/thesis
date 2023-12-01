@@ -1,0 +1,336 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  12pt,
+  a5,margin=2cmpaper,
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Summary and discussion},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Summary and discussion}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\hypertarget{thesis-summary}{%
+\subsection{Thesis summary}\label{thesis-summary}}
+
+In the \textbf{first chapter}, we presented background material
+regarding computational pathology, specifically on the potential of deep
+learning to improve prognostication for people suffering from prostate
+cancer. We explained the importance of prognostication. The primary aim
+of this thesis was:
+
+\begin{quote}
+`to investigate if histopathology slides contain additional information
+to prognosticate patient.'
+\end{quote}
+
+The secondary aim of the thesis was stated as:
+
+\begin{quote}
+``to investigate if we could develop algorithms using the entire
+whole-slide images together with patient-level information.
+\end{quote}
+
+To tackle the first aim, in the \textbf{second chapter}, we demonstrated
+that our method can predict prostate cancer recurrence in patients after
+prostatectomy. By using histology data, we could further improve our
+prognostication for these patients beyond typical clinical variables,
+such as Gleason scores. We also demonstrated that by clustering latent
+space of a neural network, we can define concepts that explain the final
+predictions. These concepts corresponded to patterns used by
+pathologists for decades. Interestingly the concepts also showed the
+importance of cribiforma-like growth, only recently surfaced as an
+important feature in the histopathology literature. Finally, this
+chapter laid the foundation for extracting these features from whole
+slide images since, in this work, we used predefined extracted areas
+from the original slide based on the highest-grade tumor.
+
+Switching to the second aim of the thesis, we proposed in the
+\textbf{third chapter}, a new method termed streaming, which aims to
+solve the dimensionality problem with a memory-efficient implementation
+of convolutions. We demonstrated that this approach is numerically
+equivalent to regular convolutions used in convolutional neural
+networks, and decreases memory usage by 99\%+. Additionally, we showed
+that we can converge convolutional neural networks implemented with this
+method and that increasing the resolution leads to higher performance in
+histopathology tasks due to the increase in detail.
+
+In the \textbf{fourth chapter}, we employed this new method to predict
+prostate cancer on whole slide images. When compared to a competitive
+multiple-instance learning method, the streaming method outperformed and
+demonstrated better generalization to an unseen scanner. We also showed
+that using gradient saliency, the method has gradients with large values
+around tumor areas. These gradient saliency maps correspond to the
+predictions of a multiple-instance learning network and tumor
+localization, indicating their correlation to the classification
+endpoint
+
+In the \textbf{fifth chapter}, we employed the streaming method to
+predict biochemical recurrence of prostate cancer on whole-slide images.
+We showed preliminary but promising results. Deep learning seemed to
+find signal using the biochemical recurrence label on a small cohort.
+The attention heatmaps showed the network being able to learn to focus
+on the tumor areas.
+
+This work showed that backpropagation through a binary label, towards a
+multi-megapixel image is sufficient to find signal end to end.
+Interestingly, chapter 3 revealed that the streaming method is
+data-efficient, even compared to multiple instance learning, which
+utilizes patches. We hypothesize that the amount of patches is less
+important since we still have the same amount of signal in the data (the
+number of labeled samples). It could also be that employing very large
+feature maps counters overfitting since the number of parameters of a
+kernel is relatively smaller. Furthermore, we use an aggregation layer
+later in the network while the feature map is still relatively large,
+making it more difficult to overfit specific noise.
+
+\hypertarget{concluding-remarks-and-further-research}{%
+\subsection{Concluding remarks and further
+research}\label{concluding-remarks-and-further-research}}
+
+This thesis showed that we can optimize state-of-the-art convolutional
+neural networks, in a straightforward end-to-end fashion, given only
+small constraints and achieve state-of-the-art results. Additionally,
+tissue morphology contains additional signal to prognosticate patients,
+and this can be extracted by neural networks.
+
+\hypertarget{whats-next-in-prostate-prognosis}{%
+\subsection{What's next in prostate
+prognosis}\label{whats-next-in-prostate-prognosis}}
+
+The field of natural language processing has shown that for large
+language models data is key, in terms of quality and quantity. Large
+amounts of data enables training large models. We believe being able to
+optimize end-to-end from whole-slide images to patient-level information
+is key in feature discovery for neural networks. Every non-end-to-end
+patch-based approach needs to create assumptions that could hamper
+performance.
+
+.. SSL trumps classification performance
+
+We will need to collaborate the gather sizable datasets, since these
+cohorts are quite rare.
+
+Trustworthyness!
+
+Sanity models! Canary coalmine etc.
+
+Challenges of survival based losses..
+
+\hypertarget{generalization}{%
+\subsection{Generalization}\label{generalization}}
+
+One of the challenges in this field is the problem of model
+generalization. Many publications focus on creating a variation of a
+model for a specific dataset, which may not generalize well to other
+datasets, containing slides of different labs or different scanners.
+
+Another difference occurs by nature of post-prospective cohorts. When
+gathering this data, slides need to be collected from the archives and
+scanned. Since these slides originate from around the time of diagnosis,
+they are many years old, depending on the follow-up time and the age of
+the study. Slides fade over time, in different ways, depending on the
+reagents used to prepare them, and how they are stored. Since
+prognostication is mostly of interest at the time of diagnosis, patient
+that would order such a test, would have fresh histopathology slides.
+
+All of these factors may result in differences in color distribution,
+compression, or image properties in various datasets. To bring these
+algorithms into the clinic, it is essential to address the bias in the
+networks, and to validate them on multiple datasets from different
+sources. Ideally, to judge generalization towards fresh slides, we would
+validate on a post-prospective cohort where the archival tissue paraffin
+blocks are available, and able to prepare fresh slides using them.
+Another option would be to develop an algorithm and validate in a new
+prospective trial. Even better would be a cohort, prepared at a digital
+labs that chooses to keep the whole-slide images stored.
+
+\hypertarget{deep-learning-aiding-biological-discovery}{%
+\subsection{Deep learning aiding biological
+discovery}\label{deep-learning-aiding-biological-discovery}}
+
+\hypertarget{transformer-vs-cnn}{%
+\subsection{Transformer vs CNN}\label{transformer-vs-cnn}}
+
+\hypertarget{thoughts-on-computational-pathology-in-general}{%
+\subsection{Thoughts on computational pathology in
+general}\label{thoughts-on-computational-pathology-in-general}}
+
+\hypertarget{academic-and-industry-overlap}{%
+\subsection{Academic and industry
+overlap}\label{academic-and-industry-overlap}}
+
+Unfortunately, the current academic incentives means that a lot of
+effort in the research community is not focused on these core problems
+in the field. Several factors contribute to this, such as funding
+concerns, the need for PhD students to publish, and the competitive
+nature of the field. This leads to an unfair competition where larger AI
+firms with more resources drive the field forward, while academia often
+lags behind.
+
+So another class that I see of the problem of tracking smallest plural
+fast pathologist was using deep learning as a alright, let's switch and
+put them in it's still fairly easy to get a tornado set for certain
+Mainly in the event of a task with the baton of this and trading them
+off the shelf for small variation of existing model on them. This is
+almost guaranteed to work and it might be almost the wonders of finally
+creating a publication, given the incentives of a PhD, in this country,
+everyone needs to publish a certain number of papers.It is very
+appealing to go this route.
+
+Since it is still happening in radiology of fields, which has been
+digitized way earlier than pathology. I'm afraid that these publications
+will keep getting written and worked on in the near future. It is
+telling that when asking around, people rarely read each other's
+research in this field, attempting to read the papers of the bigger AI
+discussing methods. In my opinion, this leads to research that reinvents
+the wheel all of the time and doesn't build upon each other.
+
+Given the hype of deep learning, given a big enough dataset, it is still
+possible to publish in a very high impact journal. We published a
+Gleason grading algorithm in a very high impact journal, while,
+cynically, we could say that we already knew it was going to work if we
+did not do that. AI researchers in this field will not learn that much
+from this paper, although physicians may learn that it's possible to do
+these tasks at an expert level. I hope that this is soon not a surprise
+anymore and everybody knows that given enough data, these algorithms can
+find the right patterns.
+
+In my opinion, when you can create an algorithm that is commercially
+interesting, meaning it can actually be implemented and sold in the
+clinic and you can develop this algorithm within a year, it may not make
+sense to develop those in academia, but let companies develop them.
+Since academia is funded by public money and doesn't have any profit
+incentive they should focus on the long-term work, on moonshot ideas.
+With the risk of not getting funding and the fact that PhD students have
+to publish, make this unlikely to happen.
+
+Meaning that right now, academia is doing a lot of similar work as
+companies do, often with way less funding. This leads to an unfair
+advantage or unfair competition. The companies often have way more
+hardware. Especially in the field of image analysis in general. After
+language processing, you see that bigger AI firms with large sums of
+money drive the field forward. Academia often hobbles after those
+companies. Nonetheless, fundamental research remains crucial, and the
+importance of computational pathology and prostate cancer prognosis
+should not be underestimated. It is essential to continue exploring new
+methods and techniques to improve patient outcomes and advance the
+field.
+
+The need to use deep learning as a tool to find biological pathways /
+causation.
+
+\hypertarget{bigger-picture}{%
+\subsection{Bigger picture}\label{bigger-picture}}
+
+As discussed in chapter 1, the computational pathology field has started
+working on predicting human-defined features, such as mitotic count,
+tumor grading, and regular disease classification. What is happening now
+is that we are deriving more features using deep learning in cohorts of
+patients where clinical endpoints are available. Since deep learning
+works on input images, it has the potential to identify interesting
+features from histology that could predict treatment response. These
+solutions can assist oncologists in helping patients, providing broader
+benefits than just automating small tasks for the pathologist.
+
+There are still plenty of papers published where one can quickly compile
+a dataset for a very specific, narrow task, perhaps using just a couple
+of hundred patients. The approach is to take this task, develop a model,
+and then attempt to predict outcomes for this task. What we have seen
+recently in natural language processing (NLP) and other fields is that
+given enough data and correlations, large-scale models can be successful
+even when tackling tasks that are not specifically designed for them. We
+should learn from these NLP foundational models and aim for bigger
+models, rather than focusing on publishing papers for small, narrow
+tasks. By expanding our scope and ambitions, we can make greater strides
+in computational pathology and related fields.
+
+One of the really exciting projects in this field is the EU's Big
+Picture project, where a total of one million slides will be collected.
+Given enough data and the right techniques, such as self-supervised
+learning, models will be able to estimate prognosis better than
+e.g.~tumor grading. Self-supervised learning networks can discover
+patterns on their own when provided with sufficient data. These networks
+have the potential to automatically generate grading schemes and extract
+valuable information from the data (similar to chapter 3).
+
+It is not surprising that self-supervised learning networks can provide
+more prognostic information than traditional methods used by
+oncologists. Instead of relying on discrete grades (e.g., 3-5 grades),
+these models can operate in a continuous manner, enabling a more nuanced
+understanding of the data. As a result, statistical models can predict
+or estimate diagnoses more effectively than the human-based approaches
+currently in use.
+
+In our study, a couple of hundred patients were analyzed using a
+specific model. We found that by clustering the latent space we could
+find the cribiform growth pattern, even if they are not specifically
+targeted. However, we must also be careful with interpreting patterns
+or, in this case, clustering of data. It is crucial not to overstate the
+importance of certain patterns, especially since we may not know their
+relevance in the larger context. The data we can derive from biological
+tissue, as well as the knowledge encoded in medical literature, can be
+used to build self-supervised foundational models that can potentially
+discover relationships we are not yet aware of. Extend.. (all the omics
+etc)
+
+(Although interobserver variability is a significant problem in
+computational pathology, the model's predictions do not stand alone in
+determining a patient's treatment. Instead, they contribute to
+predicting whether a patient will benefit from a specific treatment.)
+
+\hypertarget{conclusion-and-summary-of-discussion-and-thesis}{%
+\subsection{Conclusion and summary of discussion and
+thesis}\label{conclusion-and-summary-of-discussion-and-thesis}}
+
+\end{document}

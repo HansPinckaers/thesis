@@ -1,0 +1,1122 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  12pt,
+  a5,margin=2cmpaper,
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\ifLuaTeX
+  \usepackage{luacolor}
+  \usepackage[soul]{lua-ul}
+\else
+  \usepackage{soul}
+\fi
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newlength{\cslentryspacingunit} % times entry-spacing
+\setlength{\cslentryspacingunit}{\parskip}
+\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+  \let\oldpar\par
+  \def\par{\hangindent=\cslhangindent\oldpar}
+  \fi
+  % set entry spacing
+  \setlength{\parskip}{#2\cslentryspacingunit}
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Predicting biochemical recurrence of prostate cancer with artificial intelligence},
+  pdfauthor={Hans Pinckaersa*, Jolique van Ipenburga, Jonathan Melamedb, Angelo De Marzoc, Elizabeth A. Platzd, Bram van Ginnekena, Jeroen van der Laaka,e, Geert Litjensa},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Predicting biochemical recurrence of prostate cancer with
+artificial intelligence}
+\author{Hans Pinckaers\textsuperscript{a}*, Jolique van
+Ipenburg\textsuperscript{a}, Jonathan Melamed\textsuperscript{b}, Angelo
+De Marzo\textsuperscript{c}, Elizabeth A. Platz\textsuperscript{d}, Bram
+van Ginneken\textsuperscript{a}, Jeroen van der
+Laak\textsuperscript{a,e}, Geert Litjens\textsuperscript{a}}
+\date{}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+\textbf{Background:} The first sign of metastatic prostate cancer after
+radical prostatectomy is rising PSA levels in the blood, termed
+biochemical recurrence. The prediction of recurrence relies mainly on
+the morphological assessment of prostate cancer using the Gleason
+grading system. However, in this system, within-grade morphological
+patterns and subtle histopathological features are currently omitted,
+leaving a significant amount of prognostic potential unexplored.
+
+\textbf{Methods:} To discover additional prognostic information using
+artificial intelligence, we trained a deep learning system to predict
+biochemical recurrence from tissue in H\&E-stained microarray cores
+directly. We developed a morphological biomarker using convolutional
+neural networks leveraging a nested case-control study of 685 patients
+and validated on an independent cohort of 204 patients. We use
+concept-based explainability methods to interpret the learned tissue
+patterns.
+
+\textbf{Results:} The biomarker provides a strong correlation with
+biochemical recurrence in two sets (n=182 and n=204) from separate
+institutions. Concept-based explanations provided tissue patterns
+interpretable by pathologists.
+
+\textbf{Conclusions:} These results show that the model finds predictive
+power in the tissue beyond the morphological ISUP grading.
+\end{abstract}
+
+Corresponding author: Hans Pinckaers, Radboud University Medical Center,
+Postbus 9101, 6500 HB Nijmegen, The Netherlands (tel +31 634 856 950,
+hans.pinckaers@radboudumc.nl)
+
+\textsuperscript{a} Department of Pathology, Radboud Institute for
+Health Sciences, Radboud University Medical Center, Nijmegen, The
+Netherlands
+
+\textsuperscript{b} Department of Pathology, New York University Langone
+Medical Center, New York, USA
+
+\textsuperscript{c} Departments of Pathology, Urology and Oncology, The
+Brady Urological Research Institute and the Sidney Kimmel Comprehensive
+Cancer Center at Johns Hopkins, Baltimore, Maryland, USA
+
+\textsuperscript{d} Department of Epidemiology, Johns Hopkins Bloomberg
+School of Public Health, Baltimore, Maryland, USA
+
+\textsuperscript{e}Center for Medical Image Science and Visualization,
+Linköping University, Linköping, Sweden
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+Prostate cancer is a common malignancy among men, affecting 1.4 million
+per year.\textsuperscript{1} A significant proportion of these men will
+receive the primary curative treatment of a prostatectomy. This
+surgery's success can partly be judged by the concentration of
+prostate-specific antigen (PSA) in the blood. While it has a dubious
+role in prostate cancer
+screening\textsuperscript{2(ppHeijnsdijk2018-yn)}, this protein is a
+valuable biomarker in PCa patients' follow-up post-prostatectomy. In a
+successful surgery, the concentration will mostly be undetectable
+(\textless0.1 ng/mL) after four to six weeks\textsuperscript{3}.
+
+However, in approximately 30\% of the patients\textsuperscript{6}, PSA
+will rise again after surgery, called biochemical recurrence, pointing
+to regrowth of prostate cancer cells. Biochemical recurrence is a
+prognostic indicator for subsequent progression to clinical metastases
+and prostate cancer death.\textsuperscript{7} Estimating chances of
+biochemical recurrence could help to better stratify patients for
+specific adjuvant treatments.
+
+The risk of biochemical recurrence of prostate cancer is currently
+assessed in clinical practice through a combination of the ISUP
+grade\textsuperscript{8}, the PSA value at diagnosis and the TNM staging
+criteria. In a recent European consensus guideline, these factors were
+proposed to separate the patients into a low-risk, intermediate-risk and
+high-risk group.\textsuperscript{9} A high ISUP grade independently can,
+independently of other factors, assign a patient to the intermediate
+(grade 2/3) or high-risk group (grade 4/5).
+
+Based on the distribution of the Gleason growth
+patterns\textsuperscript{10}, which are prognostically predictive
+morphological patterns of prostate cancer, pathologists assign cancerous
+tissue obtained via biopsy or prostatectomy into one of five groups.
+They are commonly referred to as International Society of Urological
+Pathology (ISUP) grade groups, the ISUP grade, Gleason grade groups, or
+just grade groups.\textsuperscript{13}. Throughout this paper we will
+use the term \emph{ISUP grade}. The ISUP grade suffers from several
+well-known limitations. For example, there is substantial disagreement
+in the grading using the Gleason scheme.\textsuperscript{13}.
+Furthermore, although the Gleason growth patterns have seen significant
+updates and additions since their inception in the 1960s, they remain
+relatively coarse descriptors of tissue morphology. As such, the
+prognostic potential of more fine-grained morphological features has
+been underexplored. We hypothesize that artificial intelligence, and
+more specifically deep learning, has the potential to discover such
+information and unlock the true prognostic value of morphological
+assessment of cancer. Specifically, we developed a deep learning system
+(DLS), trained on H\&E-stained histopathological tissue sections,
+yielding a score for the likelihood of early biochemical recurrence.
+
+Deep learning is a recent new class of machine learning algorithms that
+encompasses models called neural networks. These networks are optimized
+using training data; images with labels, such as recurrence information.
+From the training data, relevant features to predict the labels are
+automatically inferred. During development, the generalization of these
+features is tested on separated training data, which is not used for
+learning. Afterwards, a third independent set of data, the test set, is
+used to ensure generalization. Since features are inferred, handcrafted
+feature engineering is not needed anymore to develop machine learning
+models. Neural networks are the current state-of-the-art in image
+classification\textsuperscript{15}.
+
+Deep learning has previously been shown to find visual patterns to
+predict genetic mutations from morphology, for example, in
+lymphoma\textsuperscript{16} and lung cancer\textsuperscript{17}.
+Additionally, deep learning has been used for feature discovery in
+colorectal cancer\textsuperscript{18} and intrahepatic
+cholangiocarcinoma\textsuperscript{19} using survival data. Although
+deep learning has been used with biochemical recurrence data on prostate
+cancer, Leo \emph{et al.\textsuperscript{20}} assumed manual feature
+selection beforehand, strongly limiting the extent of new features to be
+discovered. Yamamoto et al.\textsuperscript{21} used whole slide images
+and a deep-learning-based encoding of the slides to tackle the slides'
+high resolution. They leverage classical regression techniques and
+support-vector machine models on these encodings. The deep learning
+model was not directly trained on the outcome, limiting the feature
+discovery in this work as well.
+
+A common critique of deep learning is its black-box nature of the
+inferred features.\textsuperscript{22} Especially in the medical field,
+decisions based on these algorithms should be extensively validated and
+be explainable. Besides making the algorithms' prediction trustworthy
+and transparent, from a research perspective, it would be beneficial to
+visualize the data patterns which the model learned, allowing insight
+into the inferred features. We can visualize the patterns learned by the
+network leveraging a new technique called Automatic Concept Explanations
+(ACE)\textsuperscript{23}. ACE clusters patches of the input image using
+their intermediate inferred features showing common patterns inferred by
+the network. We were interested in finding these common concepts over a
+range of images to unravel patterns that the model has identified.
+
+This study aimed to use deep learning to develop a new prognostic
+biomarker based on tissue morphology for recurrence in patients with
+prostate cancer treated by radical prostatectomy. As training data, we
+used a nested case-control study\textsuperscript{24}. This study design
+ensured we could evaluate whether the network learned differentiating
+patterns independent of Gleason patterns.
+
+\hypertarget{methods}{%
+\section{Methods}\label{methods}}
+
+\emph{Cohorts}
+
+Two independent cohorts of patients who underwent prostatectomy for
+clinically localized prostate cancer were used in this study. Patients
+were treated at either the Johns Hopkins Hospital in Baltimore or New
+York Langone Medical Center. Both cohorts were accessed via the Prostate
+Cancer Biorepository Network\textsuperscript{25}.
+
+For the development of the novel deep-learning-based biomarker (further
+referred to as DLS biomarker), we used a nested case-control study of
+patients from Johns Hopkins. This study consists of 524 matched pairs
+(724 unique patients) containing four tissue spots per patient. They
+were sampled from 4,860 prostate cancer patients with clinically
+localized prostate cancer who received radical retropubic prostatectomy
+between 1993 and 2001. Men were routinely checked after prostatectomy at
+3 months and at least yearly thereafter. Surveillance for recurrence was
+conducted using digital rectal examination and measurement of serum PSA
+concentration. Patients were followed for outcome until 2005, with a
+median follow-up of 4.0 years. The outcome was defined as recurrence,
+based on biochemical recurrence (serum PSA \textgreater0.2 ng/mL on 2 or
+more occasions after a previously undetectable level after
+prostatectomy), or events indicating biochemical recurrence before this
+was measured; local recurrence, systemic metastases, or death from
+prostate cancer. Controls were paired to cases with recurrence using
+incidence density sampling\textsuperscript{26}. For each case, a control
+was selected who had not experienced recurrence by the date of the
+case's recurrence and was additionally matched based on age at surgery,
+race, pathologic stage, and Gleason sum in the prostatectomy specimen
+based on the pathology reports. Given the incidence density sampling of
+controls, some men were used as controls for multiple cases, and some
+controls developed recurrence later and became cases for that time
+period.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.2110}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1468}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0917}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1009}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0275}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1376}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1560}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1101}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Table 1}: Baseline characteristics of test set and development
+set from the John Hopkins Hospital, prostate cancer recurrence cases and
+controls, men who underwent radical prostatectomy for clinically
+localized disease between 1993 to 2001.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+& \textbf{Development set} & & & & \textbf{Test set} & & \\
+& \textbf{Recurrence cases} & \textbf{No events cases} & \textbf{P} & &
+\textbf{Recurrence cases} & \textbf{Controls*} & \textbf{P} \\
+\textbf{N} & 368 & 135 & & & 91 & 91 & \\
+\textbf{Age, mean (SD)} & 58.9 (6.2) & 59.3 (6.3) & p=0.540 & & 58.4
+(6.1) & 58.3 (6.3) & \emph{Matched} \\
+\textbf{preop. PSA (ng/mL), mean (SD)} & 12.3 (10.0) & 10.1 (7.5) &
+p=0.010 & & 12.3 (10.8) & 10.5 (7.7) & p=0.195 \\
+\textbf{Race, n (\%)} & & & p=0.599 & & & & \emph{Matched} \\
+White & 327 (88.9) & 120 (88.9) & & & 72 (79.1) & 75 (82.4) & \\
+Black or African American & 32 (8.7) & 14 (10.4) & & & 12 (13.2) & 10
+(11.0) & \\
+Other & 9 (2.4) & 1 (0.7) & & & 7 (7.7) & 6 (6.6) & \\
+\textbf{Pathological stage} & & & p=0.107 & & & & \emph{Matched} \\
+pT2 & 43 (11.7) & 25 (18.5) & & & 20 (22.0) & 19 (20.9) & \\
+pT3a & 199 (54.1) & 63 (46.7) & & & 50 (54.9) & 51 (56.0) & \\
+pT3b or N1 & 126 (34.2) & 47 (34.8) & & & 21 (23.1) & 21 (23.1) & \\
+\textbf{Gleason sum prostatectomy (\%)} & & & p=0.179 & & & &
+\emph{Matched} \\
+6 & 38 (10.3) & 25 (18.5) & & & 20 (22.0) & 23 (25.3) & \\
+7 & 233 (63.3) & 76 (56.3) & & & 51 (56.0) & 50 (54.9) & \\
+8+ & 97 (26.4) & 34 (25.2) & & & 20 (22.0) & 18 (19.8) & \\
+\textbf{ISUP grade, n (\%)} & & & p=0.002 & & & & p=0.851 \\
+1 & 38 (10.3) & 25 (18.5) & & & 20 (22.0) & 23 (25.3) & \\
+2 & 140 (38.0) & 61 (45.2) & & & 35 (38.5) & 38 (41.8) & \\
+3 & 93 (25.3) & 15 (11.1) & & & 16 (17.6) & 12 (13.2) & \\
+4 & 49 (13.3) & 21 (15.6) & & & 13 (14.3) & 10 (11.0) & \\
+5 & 48 (13.0) & 13 (9.6) & & & 7 (7.7) & 8 (8.8) & \\
+\textbf{Positive surgical margins} & 140 (38.1) & 24 (17.8) &
+p\textless0.001 & & 36 (39.6) & 20 (22.0) & p=0.016 \\
+\textbf{Mean year of surgery} & 1997.0 (2.3) & 1995.5 (2.3) &
+p\textless0.001 & & 1997 (2.3) & 1995 (2.1) & p\textless0.001 \\
+* due to the nested case-control nature, some controls could have a
+biochemical recurrence, but always later than their matched case. & & &
+& & & & \\
+\end{longtable}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.4211}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1974}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1974}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1579}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Table 2:} Baseline characteristics of the cohort from New York
+Langone hospital, prostate cancer recurrence cases and controls, men who
+underwent radical prostatectomy between 2001 to 2003
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+& \textbf{Recurrence cases} & \textbf{Controls} & \textbf{P} \\
+\textbf{N} & 38 & 166 & \\
+\textbf{preop. PSA (ng/mL), mean (SD)} & 11.6 (11.5) & 6.7 (3.9) &
+p=0.014 \\
+\textbf{Age}, mean (SD) & 61.7 (8.9) & 60.3 (6.6) & p=0.359 \\
+\textbf{Race}, n (\%) & & & p=0.401 \\
+African-American & 2 (5.3) & 4 (2.4) & \\
+Asian & 2 (5.3) & 3 (1.8) & \\
+Caucasian & 33 (86.8) & 144 (86.7) & \\
+Not reported & 0 (0) & 2 (1.2) & \\
+Other & 1 (2.6) & 13 (7.8) & \\
+\textbf{Pathological stage}, n (\%) & & & p\textless0.001 \\
+pT2a & 0 (0) & 12 (7.2) & \\
+pT2b & 3 (7.9) & 5 (3.0) & \\
+pT2c & 16 (42.1) & 114 (68.7) & \\
+pT3a & 10 (26.3) & 27 (16.3) & \\
+pT3b & 9 (23.7) & 8 (4.8) & \\
+\textbf{ISUP grade}, n (\%) & & & p\textless0.001 \\
+1 & 3 (7.9) & 67 (40.4) & \\
+2 & 13 (34.2) & 76 (45.8) & \\
+3 & 6 (15.8) & 13 (7.8) & \\
+4 & 5 (13.2) & 3 (1.8) & \\
+5 & 11 (28.9) & 7 (4.2) & \\
+\textbf{Surgical Margins}, n (\%) & & & p=0.060 \\
+Focal & 10 (26.3) & 20 (12.0) & \\
+Free of tumour & 27 (71.1) & 144 (86.7) & \\
+Widespread & 1 (2.6) & 2 (1.2) & \\
+\end{longtable}
+
+The TMA spots were cores (0.6 mm in diameter) from the highest-grade
+tumour nodule. Random subsamples were taken in quadruplicate for each
+case. The whole slides were scanned using a Hamamatsu NanoZoomer-XR
+slide scanner at 0.23 μ/px. TMA core images were extracted using QuPath
+(v0.2.3,\textsuperscript{27}). We discarded analysis of cores with less
+than 25\% tissue. The cores were manually checked (HP) for prostate
+cancer, excluding 535 cores without clear cancer cells present in the
+TMA cross-section, resulting in a total of 2343 TMA spots. The nested
+case-control set was split based on the matched pairs into a development
+set (268 unique pairs), and a test set (91 pairs); the latter was used
+for evaluation only. We leveraged cross-validation by subdividing the
+development into three folds to tune the models on different parts of
+the development set. We divided paired patient, randomly, keeping into
+account the distribution of the matched variables. The random assignment
+was done using the scikit-multilearn package\textsuperscript{28},
+specifically the `IterativeStratification' method in
+`skmultilearn.model\_selection'. After splitting the dataset into
+training and test, we split the training dataset into three folds using
+the same method for the cross-validation.
+
+To validate the DLS biomarker on a fully independent external set, we
+used the cohort from New York Langone Medical Center. This external
+validation cohort consists of 204 patients with localized prostate
+cancer treated with radical prostatectomy between 2001 and 2003.
+Patients were followed for outcome until 2019, with a median follow-up
+of 5 years. Biochemical recurrence was defined as either a single PSA
+measurement of ≥ 0.4 ng/m or PSA level of ≥ 0.2 ng/ml followed by
+increasing PSA values in subsequent follow-up. Cores were sampled from
+the largest tumour focus or any higher-grade focus (\textgreater{} 3mm).
+Subsamples were taken in quadruplicate for each case. Images were
+scanned using a Leica Aperio AT2 slide scanner at 0.25 μ/px.
+
+\emph{Model details}
+
+For developing the convolutional neural networks (CNNs) we used
+PyTorch\textsuperscript{29}. As an architecture, we used
+ResNet50-D\textsuperscript{30} pretrained on ImageNet from PyTorch Image
+Models\textsuperscript{31}. We used the Lookahead
+optimizer\textsuperscript{32} with RAdam\textsuperscript{33}, with a
+learning rate of 2e-4 and mini-batch size of 16 images. We used weight
+decay (7e-3), and a drop-out layer (p=0.15) before the final
+fully-connected layer. We used EfficientNet-style\textsuperscript{34}
+dropping of residual connections (p=0.3) as implemented in PyTorch Image
+Models. We used Bayesian Optimization to find the optimal values.
+
+We resized the TMAs to 1.0 mu/pixel spacing and cropped to 768x768
+pixels. Extensive data augmentations were used to promote
+generalization. The transformations were: flipping, rotations, warping,
+random crop, HSV color augmentations, jpeg compression, elastic
+transformations, Gaussian blurring, contrast alterations, gamma
+alterations, brightness alterations, embossing, sharpening, Gaussian
+noise and cutout\textsuperscript{35}. Augmentations were implemented by
+albumentations\textsuperscript{36} and fast.ai\textsuperscript{37}.
+
+TMA spots from cases experiencing recurrence were assigned a value of
+0-4, depending on the year on which the first event, either biochemical
+recurrence, metastases, or prostate cancer-related death, was recorded,
+with 0 meaning recurrence within a year, 4 meaning after 4+ years. TMA
+spots from cases without an event were also assigned the label 4.
+
+We validated the model on the development validation fold each epoch
+with a moving average of the weights from 5 subsequent epochs. We used
+the concordance index as a metric to decide which model performed the
+best.
+
+As the final prediction at the patient level, the TMA spot with the
+highest score was used. The final DLS consists of an ensemble of 15
+convolutional neural networks. Using cross-validation as described
+above, 15 networks were trained for each fold, of which the five best
+performing were used for the DLS.
+
+\includegraphics[width=6.5in,height=3.44444in]{media/image3.png}
+
+\textbf{Figure 1.} Overview of the methods summarizing the biomarker
+development and the Automatic Concept Explanations (ACE) process. Cores
+were extracted from TMA slides and used to train a neural network to
+predict the years to biochemical recurrence. On the nested case-control
+test set, a matched analysis was performed. For ACE, patches were
+generated from the cores, inferenced through the network and clustered
+based on their intermediate features.
+
+\emph{Statistical analysis}
+
+For primary analysis of the nested case-control study, odds ratios (OR)
+and 95\% confidence intervals (CI) were calculated using conditional
+logistic regression, following Dluzniewski et al.\textsuperscript{38}.
+Due to the study design, calculating hazard ratios using a Cox
+proportional hazard regression is not appropriate. For the primary
+analysis, the continuous DLS marker was given as the only variable. For
+a secondary analysis, we added the non-matched variables PSA, positive
+surgical margins, and a binned indicator variable for year of surgery.
+Since matching was done on Gleason sum, and our goal was to identify
+patterns beyond currently used Gleason patterns, we corrected for the
+residual differences of the ISUP grade between cases and control (see
+Table 1). A correction was performed by adding a continuous covariate
+since, due to the small differences, an indicator covariate did not
+converge. Analysis was done using the lifelines Python package (v.
+0.25.10)\textsuperscript{39} with Python (v. 3.7.8). Since the DLS
+predicts the time to recurrence, high values indicate a low probability
+of recurrence. We multiplied the DLS output by -1 to make the analysis
+more interpretable. For three patients (1 from the Johns Hopkins cohort
+and 2 from the New York Langone cohort), PSA values were missing and
+were therefore replaced by the median.
+
+For primary analysis of the New York Langone cohort, we calculated
+hazard ratios (HR) using a Cox proportional hazards regression. We
+report a secondary multivariable analysis including indicator variables
+for relevant clinical covariates, Gleason sum, pathological stage, and
+surgical margin status. We tested the proportional hazards assumption as
+satisfactory (every p-value above 0.01) using the Pearson correlation
+between the residuals and the rank of follow-up time. Kaplan Meier plots
+were generated for the New York Langone cohort. Due to the nested
+case-control design for the Johns Hopkins set, this set could not be
+visualized in a Kaplan Meier plot.
+
+\emph{Automatic Concept Explanations}
+
+To generate concepts, we picked the best performing single CNN from the
+DLS based on its validation set fold. We used a combination of the
+methods of Yeh \emph{et al.}, 2020\textsuperscript{40} and Ghorbani
+\emph{et al.}, 2019\textsuperscript{23}.
+
+We tiled the TMA images into 256x256 patches within the tissue,
+discarding patches with more than 50\% whitespace. These patches were
+padded to the original input shape of the CNN (768x768 pixels). The
+latent space of layer 42 of 50 was saved for each tile. Afterwards, we
+used PCA (50 components) to lower the dimensionality and then performed
+k-means (k=15) to cluster the latent spaces.
+
+In contrast to Yeh \emph{et al.} and Ghorbani \emph{et al.}, we did not
+sort the concepts on completeness of the explanations or importance for
+prediction of individual samples. We sorted the concepts to find
+interesting new patterns related to recurrence across images by ranking
+the concepts based on the DLS score of the TMA spot from which they
+originated.
+
+For each concept, 25 examples were randomly picked and visually
+inspected by a pathologist (JvI), with a special interest in
+uropathology, blinded to the case characteristics and prediction of the
+network.
+
+\hypertarget{results}{%
+\section{Results}\label{results}}
+
+The DLS system was developed on the Johns Hopkins cohort with 2343 TMA
+spots of 685 included unique patients (39 patients were excluded due to
+insufficient tumour amount in the cores). 492 patients were recurrence
+cases (72\%). The 685 included patients were split into a development
+set of 503 unique patients and a test set of 91 matched pairs of cases
+and controls (182 unique patients).
+
+In the external validation cohort, 38 out of the 204 patients (19\%) had
+biochemical recurrence after complete remission, PSA nadir after 3
+months post-prostatectomy. From the 204 patients, 620 TMA spots were
+included. Clinical characteristics of the cohorts can be found in Table
+1 and Table 2.
+
+The DLS marker showed a strong association in the primary analyses on
+the test set of the Johns Hopkins cohort with an OR of recurrence of
+3.28 (95\% CI 1.73-6.23; p\textless0.005) per unit increase, with DLS
+system continuous output ranging from 0-3, with two cases below 0 (-0.27
+and -0.24) (Table 3).
+
+In addition, for the John Hopkins cohort, we checked for confounding by
+ISUP grade, PSA level at diagnosis, positive surgical margins, and year
+of prostatectomy. Neither covariate was found to bias the estimates of
+effect substantially. The biomarker maintained a strong correlation of
+OR 3.32 (CI 1.63 - 6.77; p=0.001) per unit increase, adjusting for these
+factors and the continuous term for the residual difference between
+cases and controls in the ISUP grade.
+
+In the univariable analysis, the DLS marker was strongly associated with
+recurrence in the New York Langone external validation cohort with an HR
+of 5.78 (95\% CI 2.44-13.72; p\textless0.005) per unit increase. In the
+multivariate model, including ISUP grade and the other prognostic
+indicators in addition to the DLS biomarker, the DLS biomarker was still
+strongly associated with recurrence with an HR of 3.02 (CI 1.10 - 8.29;
+p=0.03) per unit increase. Kaplan Meier curves based on a median
+cut-off, and four-group categorization, show a clear separation of the
+low-risk and high-risk groups (Figure 3).
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3056}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3472}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Table 3}: Conditional logistic regression analyses of the Johns
+Hopkins test set.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Covariate} & \begin{minipage}[t]{\linewidth}\raggedright
+\textbf{Matched analysis\\
+Johns Hopkins (OR)\textsuperscript{1}}\strut
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\textbf{Multivariate analysis\\
+Johns Hopkins (OR)}\strut
+\end{minipage} \\
+\textbf{Biomarker} & \ul{3.28} (CI 1.73 - 6.23; p\textless0.005) &
+\ul{3.32} (CI 1.63 - 6.77; p=0.001) \\
+\textbf{preop. PSA (ng/mL)} & & 1.04 (CI 0.99 - 1.10; p=0.10) \\
+\textbf{Surgical margins (pos)} & & 1.69 (CI 0.69 - 4.18; p=0.25) \\
+\textbf{ISUP grade (cont.)*} & & 1.34 (CI 0.64 - 2.82; p=0.44) \\
+\textbf{Mean year of surgery} & & \\
+1992 - 1994 (n=75) & & \emph{1.0} \\
+1994 - 1997 (n=55) & & 3.35 (CI 1.13 - 9.91; p=0.03) \\
+1997 - 2001 (n=52) & & 8.22 (CI 2.38 - 28.37; p=0.0009) \\
+\textsuperscript{1} Cases and controls were matched on age at surgery,
+race, pathologic stage, and Gleason sum in the prostatectomy specimen.
+
+\textbf{\textsuperscript{2}} The ISUP grade covariate was added to
+correct for the residual differences left after matching cases with
+controls on prostatectomy Gleason sum. & & \\
+\end{longtable}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2568}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3514}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3649}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Table 4}: Cox proportional hazard analyses of New York Langone
+external validation cohort.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Covariate} & \begin{minipage}[t]{\linewidth}\raggedright
+\textbf{Univariate analysis\\
+NYU (HR)}\strut
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\textbf{Multivariate analysis\\
+NYU (HR)}\strut
+\end{minipage} \\
+\textbf{Biomarker} & \ul{4.79} (CI 2.09 - 10.96; p=0.0002) & \ul{3.02}
+(CI 1.10 - 8.29; p=0.03) \\
+\textbf{preop. PSA (ng/mL)} & & 1.07 (CI 1.02 - 1.12; p=0.004) \\
+\textbf{ISUP grade} & & \\
+1 & & 1.0 \\
+2 & & 2.64 (CI 0.73 - 9.58; p=0.14) \\
+3 & & 8.74 (CI 2.16 - 35.30; p=0.00) \\
+4 & & 12.78 (CI 2.82 - 57.91; p=0.00) \\
+5 & & 9.60 (CI 2.32 - 39.69; p=0.00) \\
+\textbf{Pathological stage} & & \\
+pT2a + b & & 1.0 \\
+pT2c & & 1.02 (CI 0.27 - 3.80; p=0.98) \\
+pT3a & & 1.26 (CI 0.28 - 5.67; p=0.77) \\
+pT3b & & 2.77 (CI 0.66 - 11.62; p=0.16) \\
+\textbf{Surgical margins} & & \\
+Free & & 1.0 \\
+Focal & & 2.13 (CI 0.76 - 5.96; p=0.15) \\
+Widespread & & 0.20 (CI 0.01 - 3.39; p=0.27) \\
+\end{longtable}
+
+Automatic Concept Explanations provided semantically meaningful concepts
+(Figure 1). Concepts were identified that correlated with either a
+relatively rapid or slow biochemical recurrence. Visual inspection by
+JvI reveals that generally, the concepts with adverse behaviour show
+mainly Gleason pattern 4 and some Gleason pattern 5, with cribriform
+configuration in TMAs within the concepts with most adverse behaviour.
+The two intermediate concepts show mainly stroma and less aggressive
+growth patterns. The two concepts predicted to be part of late
+recurrence cases show mainly Gleason 3 patterns, with readily
+recognizable well-formed glands. See the supplementary materials for a
+detailed analysis.
+
+\includegraphics[width=6.5in,height=4.09722in]{media/image4.png}
+
+\textbf{Figure 2.} Automatic Concepts Explanations. Sorted by their
+average score for the cores in which the pattern occurs. Showing the two
+most benign concepts, two intermediate and two aggressive concepts.
+Green, yellow and red shaded areas indicate 33\%, 66\% percentiles.\\
+See the supplementary materials for all concepts.
+
+\includegraphics[width=2.46477in,height=2.51042in]{media/image1.png}
+
+\textbf{Figure 3.} Kaplan Meier plot for New York Langone external
+validation cohort, Groups were separated using the median DLS biomarker
+score in this cohort (left) and using four thresholds
+(right).\includegraphics[width=2.56933in,height=2.99657in]{media/image2.png}
+
+\hypertarget{section}{%
+\section{}\label{section}}
+
+\hypertarget{discussion}{%
+\section{Discussion}\label{discussion}}
+
+We have developed a deep-learning-based morphological biomarker for the
+prediction of prostate cancer biochemical recurrence based on
+prostatectomy tissue microarrays. Using a nested case-control study, we
+trained convolutional neural networks end-to-end with biochemical
+recurrence data. The DLS marker provides a continuous score based on the
+speed of biochemical recurrence it perceived. The DLS marker had an OR
+of 3.32 (CI 1.63 - 6.77; p=0.001) per unit increase for the test set,
+and an HR of 3.02 (CI 1.10 - 8.29; p=0.03) per unit increase for the
+external validation set. These findings support our hypothesis that
+there is more morphological information in the tissue besides the ISUP
+grade.
+
+In the Kaplan Meier plot (Figure 3) the biomarker especially seems able
+to separate men with relatively rapid recurrence from men without
+(\textless5 years). However, we hypothesize that the decreased long-term
+separation in those survival curves is less due to the training cohort
+containing a median follow-up for four years. Furthermore, we choose to
+group patients together with more than four years of no biochemical
+recurrence, This limits the model\textquotesingle s capabilities to
+differentiate patients with very late recurrence. Additionally, due to
+the limitations of the morphology of the present tumour to inform about
+long-term outcomes (e.g., cells that escaped the primary tumour may
+subsequently acquire genomic changes that influence recurrence).
+Furthermore, it should be noted that the number of at-risk patients was
+small at these long-term time points.
+
+The nested case-control study contained follow-up information in
+timespans of years, this limited the use of survival based loss
+functions\textsuperscript{41}. When more granular follow-up information
+is at hand, future work could investigate usage of Cox regression based
+loss functions to better leverage the information of the clinical
+cohort.
+
+The DLS marker showed strong and similar association in both cohorts
+prepared at different pathology laboratories, which supports the
+robustness to differences in tissue preparation, staining protocols and
+scanners.
+
+We showed that Automatic Concept Explanation may be helpful to find
+concepts correlated with good and poor prognosis. The most
+discriminatory concepts followed the morphological patterns of Gleason
+grading. Well-defined prostate cancer glands were predicted to undergo
+biochemical recurrence later than disorganized sheets of prostate cancer
+cells. These concepts support the DLS system capturing the expected
+morphological patterns in support of the validity of the DLS approach.
+
+This study focused on the use of deep learning to automatically discover
+features relevant for biochemical recurrence prediction. Compared to
+before-mentioned studies on prostate cancer prognostics
+models\textsuperscript{21}, we are the first paper to directly optimize
+a neural network from prostatectomy tissue towards biochemical
+recurrence. Additionally, we report that training towards the
+biochemical recurrence endpoint results in patterns in the networks'
+features aligning with the ISUP grading.
+
+In the increasing digitalisation of pathology labs, our DLS marker may
+be applied on digitally chosen regions of interest. Our marker is
+trained on tissue microarray spots that were selected at the highest
+grade cancer focus. Furthermore, it has to be noted that a TMA core
+allows for only limited assessment of the overall prostate cancer growth
+patterns. Since these tissue cores represent only limited samples from
+what is usually a much larger tumour lesion, the potential more
+aggressive patterns may still be present outside of the chosen regions,
+including regions of potential extraprostatic extension and perineural
+invasion. Validation will need to be done on entire prostatectomy
+sections and across cancer foci.
+
+There have been improvements to prostate cancer
+grading\textsuperscript{10}, and recently the cribriform pattern is
+suggested to be important for prognostics\textsuperscript{13}. However,
+the evaluation of this pattern can show a range of inter-observer
+variability\textsuperscript{43}, although a recent consensus approach
+could help decrease this variability\textsuperscript{44}. Although we
+certainly have to keep in mind all the before-mentioned limitations, our
+findings are in line with outcomes concerning adverse behaviour in
+earlier work. The DLS system identified a concept that consisted of
+fields with cribriform-like growth patterns. This cribriform-like growth
+pattern was found to be part of the concept that was most associated
+with early recurrent cases.
+
+The results in this study are limited to newer insights of prostate
+cancer growth, information on cribriform-growth and intraductal
+carcinoma were not readily available for use in the multivariate
+analysis, although the external validation cohort was graded using the
+2005 ISUP consensus\textsuperscript{45} partly encoding the presence of
+cribriform growth inside the ISUP grade.
+
+Although biochemical recurrence is a common end-point to study prostate
+cancer progression, a clinical utility would be mostly found in
+assessing time-to-metastases or death. However, time-wise, they are
+typically significantly further separated from the surgical event,
+making it harder to identify relationships between tissue morphology and
+these end-points. Nevertheless, we would like to investigate them in the
+future.
+
+\hypertarget{conclusions}{%
+\section{Conclusions}\label{conclusions}}
+
+In summary, we have developed a deep-learning-based visual biomarker for
+prostate cancer recurrence based on tissue microarray hotspots of
+prostatectomies. The DLS marker provides a continuous score predicting
+the speed of biochemical recurrence. We obtained an odds ratio of 3.32
+(CI 1.63 - 6.77; p=0.001) for a nested case-control study from Johns
+Hopkins Hospital, matched on Gleason sum on other factors. Additionally,
+we obtained an HR of 3.02 (CI 1.10 - 8.29; p=0.03) for an external
+validation cohort from the New York Langone hospital, adjusted for ISUP
+grade, pathological stage, preoperative PSA concentration, and surgical
+margins status. Thus, this visual biomarker may provide prognostic
+information in addition to the current morphological ISUP grade.
+
+\textbf{Acknowledgments}
+
+\emph{This work was supported by the Dutch Cancer Society under Grant
+KUN 2015-7970.}
+
+\emph{This work was additionally supported by the Department of Defense
+Prostate Cancer Research Program, DOD Award No W81XWH-18-2-0013,
+W81XWH-18-2-0015, W81XWH-18-2-0016, W81XWH-18-2-0017, W81XWH-18-2-0018,
+W81XWH-18-2-0019 PCRP Prostate Cancer Biorepository Network (PCBN),
+DAMD17-03-1-0273, and supported by Prostate Cancer NCI-NIH grant (P50
+CA58236).}
+
+\textbf{References}
+
+\textbf{Appendix can be found here:}
+
+\hypertarget{refs}{}
+\begin{CSLReferences}{0}{0}
+\leavevmode\vadjust pre{\hypertarget{ref-Sung2021-iz}{}}%
+\CSLLeftMargin{1. }%
+\CSLRightInline{Sung H, Ferlay J, Siegel RL, et al. Global cancer
+statistics 2020: {GLOBOCAN} estimates of incidence and mortality
+worldwide for 36 cancers in 185 countries. \emph{CA Cancer J Clin}.
+Published online February 2021.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-US_Preventive_Services_Task_Force2018-ro}{}}%
+\CSLLeftMargin{2. }%
+\CSLRightInline{US Preventive Services Task Force, Grossman DC, Curry
+SJ, et al. Screening for prostate cancer: {US} preventive services task
+force recommendation statement. \emph{JAMA}. 2018;319(18):1901-1913.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Goonewardene2014-nu}{}}%
+\CSLLeftMargin{3. }%
+\CSLRightInline{Goonewardene SS, Phull JS, Bahl A, Persad RA.
+Interpretation of {PSA} levels after radical therapy for prostate
+cancer. \emph{Trends Urol Men s Health}. 2014;5(4):30-34.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Amling2000-ty}{}}%
+\CSLLeftMargin{4. }%
+\CSLRightInline{Amling CL, Blute ML, Bergstralh EJ, Seay TM, Slezak J,
+Zincke H. Long-term hazard of progression after radical prostatectomy
+for clinically localized prostate cancer: Continued risk of biochemical
+failure after 5 years. \emph{J Urol}. 2000;164(1):101-105.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Freedland2005-yu}{}}%
+\CSLLeftMargin{5. }%
+\CSLRightInline{Freedland SJ, Humphreys EB, Mangold LA, et al. Risk of
+prostate {Cancer--Specific} mortality following biochemical recurrence
+after radical prostatectomy. \emph{JAMA}. 2005;294(4):433-439.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Han2001-mx}{}}%
+\CSLLeftMargin{6. }%
+\CSLRightInline{Han M, Partin AW, Pound CR, Epstein JI, Walsh PC.
+Long-term biochemical disease-free and cancer-specific survival
+following anatomic radical retropubic prostatectomy. The 15-year johns
+hopkins experience. \emph{Urol Clin North Am}. 2001;28(3):555-565.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Van_den_Broeck2019-xb}{}}%
+\CSLLeftMargin{7. }%
+\CSLRightInline{Van den Broeck T, Bergh RCN van den, Arfi N, et al.
+Prognostic value of biochemical recurrence following treatment with
+curative intent for prostate cancer: A systematic review. \emph{European
+Urology}. 2019;75:967-987.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Epstein2016-im}{}}%
+\CSLLeftMargin{8. }%
+\CSLRightInline{Epstein JI, Egevad L, Amin MB, Delahunt B, Srigley JR,
+Humphrey PA. The 2014 international society of urological pathology
+({ISUP}) consensus conference on gleason grading of prostatic carcinoma.
+\emph{American Journal of Surgical Pathology}. 2016;40:244-252.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Mottet2021-uu}{}}%
+\CSLLeftMargin{9. }%
+\CSLRightInline{Mottet N, Bergh RCN van den, Briers E, et al.
+{EAU-EANM-ESTRO-ESUR-SIOG} guidelines on prostate cancer---2020 update.
+Part 1: Screening, diagnosis, and local treatment with curative intent.
+\emph{Eur Urol}. 2021;79(2):243-262.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Epstein2010-au}{}}%
+\CSLLeftMargin{10. }%
+\CSLRightInline{Epstein JI. An update of the gleason grading system.
+\emph{J Urol}. 2010;183(2):433-440.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Pierorazio2013-sq}{}}%
+\CSLLeftMargin{11. }%
+\CSLRightInline{Pierorazio PM, Walsh PC, Partin AW, Epstein JI.
+Prognostic gleason grade grouping: Data based on the modified gleason
+scoring system. \emph{BJU Int}. 2013;111(5):753-760.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Epstein2016-pf}{}}%
+\CSLLeftMargin{12. }%
+\CSLRightInline{Epstein JI, Zelefsky MJ, Sjoberg DD, et al. A
+contemporary prostate cancer grading system: A validated alternative to
+the gleason score. \emph{Eur Urol}. 2016;69(3):428-435.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Van_Leenders2020-fy}{}}%
+\CSLLeftMargin{13. }%
+\CSLRightInline{Leenders GJLH van, Kwast TH van der, Grignon DJ, et al.
+The 2019 international society of urological pathology ({ISUP})
+consensus conference on grading of prostatic carcinoma. \emph{Am J Surg
+Pathol}. 2020;44(8):e87-e99.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Ozkan2016-dq}{}}%
+\CSLLeftMargin{14. }%
+\CSLRightInline{Ozkan TA, Eruyar AT, Cebeci OO, Memik O, Ozcan L,
+Kuskonmaz I. Interobserver variability in gleason histological grading
+of prostate cancer. \emph{Scand J Urol}. 2016;50(6):420-424.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Krizhevsky2012-zi}{}}%
+\CSLLeftMargin{15. }%
+\CSLRightInline{Krizhevsky A, Sutskever I, Hinton GE. Imagenet
+classification with deep convolutional neural networks. \emph{Adv Neural
+Inf Process Syst}. 2012;25:1097-1105.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Swiderska-Chadaj2020-uy}{}}%
+\CSLLeftMargin{16. }%
+\CSLRightInline{Swiderska-Chadaj Z, Hebeda KM, Brand M van den, Litjens
+G. Artificial intelligence to detect {MYC} translocation in slides of
+diffuse large b-cell lymphoma. \emph{Virchows Arch}. Published online
+September 2020.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Coudray2018-fh}{}}%
+\CSLLeftMargin{17. }%
+\CSLRightInline{Coudray N, Ocampo PS, Sakellaropoulos T, et al.
+Classification and mutation prediction from non--small cell lung cancer
+histopathology images using deep learning. \emph{Nat Med}.
+2018;24(10):1559-1567.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Wulczyn2021-zw}{}}%
+\CSLLeftMargin{18. }%
+\CSLRightInline{Wulczyn E, Steiner DF, Moran M, et al. Interpretable
+survival prediction for colorectal cancer using deep learning. \emph{NPJ
+Digit Med}. 2021;4(1):71.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Muhammad2021-an}{}}%
+\CSLLeftMargin{19. }%
+\CSLRightInline{Muhammad H, Xie C, Sigel CS, Doukas M, Alpert L, Fuchs
+TJ. {EPIC-Survival}: End-to-end part inferred clustering for survival
+analysis, featuring prognostic stratification boosting. \emph{arXiv}.
+Published online 2021:2101.11085v2.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Leo2021-lj}{}}%
+\CSLLeftMargin{20. }%
+\CSLRightInline{Leo P, Janowczyk A, Elliott R, et al. Computer extracted
+gland features from {H\&E} predicts prostate cancer recurrence
+comparably to a genomic companion diagnostic test: A large multi-site
+study. \emph{npj Precision Oncology}. 2021;5.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Yamamoto2019-vy}{}}%
+\CSLLeftMargin{21. }%
+\CSLRightInline{Yamamoto Y, Tsuzuki T, Akatsuka J, et al. Automated
+acquisition of explainable knowledge from unannotated histopathology
+images. \emph{Nat Commun}. 2019;10:5642.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Rudin2019-fp}{}}%
+\CSLLeftMargin{22. }%
+\CSLRightInline{Rudin C. Stop explaining black box machine learning
+models for high stakes decisions and use interpretable models instead.
+\emph{Nature Machine Intelligence}. 2019;1(5):206-215.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Ghorbani2019-sy}{}}%
+\CSLLeftMargin{23. }%
+\CSLRightInline{Ghorbani A, Wexler J, Zou J, Kim B. Towards automatic
+concept-based explanations. \emph{arXiv}. Published online
+2019:1902.03129v3.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Toubaji2011-og}{}}%
+\CSLLeftMargin{24. }%
+\CSLRightInline{Toubaji A, Albadine R, Meeker AK, et al. Increased gene
+copy number of {ERG} on chromosome 21 but not {TMPRSS2-ERG} fusion
+predicts outcome in prostatic adenocarcinomas. \emph{Mod Pathol}.
+2011;24(11):1511-1520.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-noauthor_undated-cy}{}}%
+\CSLLeftMargin{25. }%
+\CSLRightInline{Prostate cancer biorepository network.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Wang2009-te}{}}%
+\CSLLeftMargin{26. }%
+\CSLRightInline{Wang MH, Shugart YY, Cole SR, Platz EA. A simulation
+study of control sampling methods for nested case-control studies of
+genetic and molecular biomarkers and prostate cancer progression.
+\emph{Cancer Epidemiol Biomarkers Prev}. 2009;18(3):706-711.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Bankhead2017-tf}{}}%
+\CSLLeftMargin{27. }%
+\CSLRightInline{Bankhead P, Loughrey MB, Fernández JA, et al. {QuPath}:
+Open source software for digital pathology image analysis. \emph{Sci
+Rep}. 2017;7(1):16878.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Szymanski2019-mf}{}}%
+\CSLLeftMargin{28. }%
+\CSLRightInline{Szymanski P, Kajdanowicz T. Scikit-multilearn: A
+scikit-based python environment for performing multi-label
+classification. \emph{J Mach Learn Res}. 2019;20(1):209-230.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Paszke2019-ic}{}}%
+\CSLLeftMargin{29. }%
+\CSLRightInline{Paszke A, Gross S, Massa F, et al. {PyTorch}: An
+imperative style, {High-Performance} deep learning library. Published
+online December 2019. \url{https://arxiv.org/abs/1912.01703}}
+
+\leavevmode\vadjust pre{\hypertarget{ref-He2019-lm}{}}%
+\CSLLeftMargin{30. }%
+\CSLRightInline{He T, Zhang Z, Zhang H, Zhang Z, Xie J, Li M. Bag of
+tricks for image classification with convolutional neural networks. In:
+\emph{Proceedings of the {IEEE/CVF} Conference on Computer Vision and
+Pattern Recognition}.; 2019:558-567.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Wightman2021-an}{}}%
+\CSLLeftMargin{31. }%
+\CSLRightInline{Wightman R. {PyTorch} image models. Published online
+2021.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Zhang2019-hr}{}}%
+\CSLLeftMargin{32. }%
+\CSLRightInline{Zhang MR, Lucas J, Hinton G, Ba J. Lookahead optimizer:
+K steps forward, 1 step back. Published online July 2019.
+\url{https://arxiv.org/abs/1907.08610}}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Liu2019-pg}{}}%
+\CSLLeftMargin{33. }%
+\CSLRightInline{Liu L, Jiang H, He P, et al. On the variance of the
+adaptive learning rate and beyond. Published online August 2019.
+\url{https://arxiv.org/abs/1908.03265}}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Tan2019-ke}{}}%
+\CSLLeftMargin{34. }%
+\CSLRightInline{Tan M, Le Q. Efficientnet: Rethinking model scaling for
+convolutional neural networks. In: \emph{International Conference on
+Machine Learning}. PMLR; 2019:6105-6114.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-DeVries2017-ah}{}}%
+\CSLLeftMargin{35. }%
+\CSLRightInline{DeVries T, Taylor GW. Improved regularization of
+convolutional neural networks with cutout. Published online August 2017.
+\url{https://arxiv.org/abs/1708.04552}}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Buslaev2020-pn}{}}%
+\CSLLeftMargin{36. }%
+\CSLRightInline{Buslaev A, Iglovikov VI, Khvedchenya E, Parinov A,
+Druzhinin M, Kalinin AA. Albumentations: Fast and flexible image
+augmentations. \emph{Information}. 2020;11(2):125.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Howard2020-wy}{}}%
+\CSLLeftMargin{37. }%
+\CSLRightInline{Howard J, Gugger S. Fastai: A layered {API} for deep
+learning. \emph{Information}. 2020;11(2):108.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Dluzniewski2012-sk}{}}%
+\CSLLeftMargin{38. }%
+\CSLRightInline{Dluzniewski PJ, Wang MH, Zheng SL, et al. Variation in
+{IL10} and other genes involved in the immune response and in oxidation
+and prostate cancer recurrence. \emph{Cancer Epidemiol Biomarkers Prev}.
+2012;21(10):1774-1782.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Davidson-Pilon2021-uq}{}}%
+\CSLLeftMargin{39. }%
+\CSLRightInline{Davidson-Pilon C, Kalderstam J, Jacobson N, et al.
+{CamDavidsonPilon/lifelines}: 0.25.10. Published online 2021.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Yeh2020-bq}{}}%
+\CSLLeftMargin{40. }%
+\CSLRightInline{Yeh CK, Kim B, Arik S, Li CL, Pfister T, Ravikumar P. On
+completeness-aware {Concept-Based} explanations in deep neural networks.
+\emph{Adv Neural Inf Process Syst}. 2020;33.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Kvamme2019-pr}{}}%
+\CSLLeftMargin{41. }%
+\CSLRightInline{Kvamme H, Borgan Ø, Scheel I. {Time-to-Event} prediction
+with neural networks and cox regression. \emph{J Mach Learn Res}.
+2019;20(129):1-30.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Hollemans2021-rd}{}}%
+\CSLLeftMargin{42. }%
+\CSLRightInline{Hollemans E, Verhoef EI, Bangma CH, et al. Cribriform
+architecture in radical prostatectomies predicts oncological outcome in
+gleason score 8 prostate cancer patients. \emph{Mod Pathol}.
+2021;34(1):184-193.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Van_der_Slot2021-xy}{}}%
+\CSLLeftMargin{43. }%
+\CSLRightInline{Slot MA van der, Hollemans E, Bakker MA den, et al.
+Inter-observer variability of cribriform architecture and percent
+gleason pattern 4 in prostate cancer: Relation to clinical outcome.
+\emph{Virchows Arch}. 2021;478(2):249-256.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Van_der_Kwast2021-kn}{}}%
+\CSLLeftMargin{44. }%
+\CSLRightInline{Kwast TH van der, Leenders GJ van, Berney DM, et al.
+{ISUP} consensus definition of cribriform pattern prostate cancer.
+\emph{Am J Surg Pathol}. Published online May 2021.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Epstein2005-hw}{}}%
+\CSLLeftMargin{45. }%
+\CSLRightInline{Epstein JI, Allsbrook WC Jr, Amin MB, Egevad LL, ISUP
+Grading Committee. The 2005 international society of urological
+pathology ({ISUP}) consensus conference on gleason grading of prostatic
+carcinoma. \emph{Am J Surg Pathol}. 2005;29(9):1228-1242.}
+
+\end{CSLReferences}
+
+\end{document}
